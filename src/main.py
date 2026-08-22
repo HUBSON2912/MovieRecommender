@@ -1,9 +1,6 @@
-import typing
+import csv
 import os
-import pathlib
-
-REQURED_DATA:list[str]=['movies_metadata.csv', 'ratings.csv', 'ratings_small.csv', 'links_small.csv', 'keywords.csv', 'links.csv', 'credits.csv']
-DATA_DIR=pathlib.Path("./data")
+from consts import DATA_DIR, REQURED_DATA, MOVIES
 
 def areDataComplete() -> bool:
     filesInData:list[str] = os.listdir(DATA_DIR)
@@ -13,6 +10,16 @@ def areDataComplete() -> bool:
     return True
 
 
-if not areDataComplete():
-    raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
+if __name__=="__main__":
+    if not areDataComplete():
+        raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
 
+    with open(MOVIES) as file:
+        reader=list(csv.reader(file))
+        reader=reader[1:] # skip headers
+        
+        for row in reader:
+            if i>=15:
+                break
+            print(row)
+            i+=1
