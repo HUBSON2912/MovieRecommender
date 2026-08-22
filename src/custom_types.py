@@ -48,4 +48,3 @@ class Movie(typing.TypedDict):
     video:bool
     vote_average:float
     vote_count:int
-    
