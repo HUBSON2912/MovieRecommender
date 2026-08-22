@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# data can be downloaded
+data/*.csv
+data/*.zip
