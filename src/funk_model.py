@@ -98,9 +98,5 @@ class Funk:
         return np.dot(self.__P[user], self.__Q.transpose()[item])
 
     def printPredictions(self):
-        for u in range(self.nusers):
-            print(f"{u}: ",end="")
-            for i in range(self.nitems):
-                print(self.predict(u,i), end=";")
-            print()
+        print(np.matmul(self.__P, self.__Q))
     

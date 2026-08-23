@@ -1,12 +1,10 @@
-import datetime
-import pickle
+# fix it has overflow on dot product in model with bigger data
+# for some reason the values in matrix Q grows really fast
+
 import csv
 import os
 import consts
-import custom_types
-import numpy as np
 import funk_model
-from typing import TypedDict, cast
 
 def areDataComplete() -> bool:
     filesInData:list[str] = os.listdir(consts.DATA_DIR)
@@ -15,57 +13,40 @@ def areDataComplete() -> bool:
             return False
     return True
 
-
-if __name__=="__main__":
-    if not areDataComplete():
-        raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
-
-
-    # TODO: every field in csv is string so it cant be converted
-    # movie_list:list[custom_types.Movie] = []
-    # with open(consts.MOVIES) as file:
-    #     reader=list(csv.reader(file))
-    #     headers=reader[0] # skip headers
-    #     reader=reader[1:]
-
-    #     for row in reader:
-    #         movie_object=cast(custom_types.Movie, {})
-    #         for i in range(len(row)): # len(row)=len(headers)
-    #             movie_object[headers[i]]=row[i]
-    #         print(movie_object)
-    #         # print(type(cast(custom_types.Movie, movie_object)))
-    #         custom_types.Movie.dictToMovie(movie_object)
-    #         # print(custom_types.Movie.dictToMovie(movie_object))
-    num_users:int = 0
-    num_movies:int = 0
-
-    # read ratings
-    real_ratings:dict[tuple[int,int], float] = dict()
+def readRatings() -> dict[tuple[int,int], float]: 
+    res:dict[tuple[int,int], float] = dict()
     with open(consts.RATINGS) as file:
         reader=list(csv.reader(file))
         headers=reader[0]
         reader=reader[1:]
         for userId,movieId,rating,_ in reader:
             userId,movieId,rating = int(userId),int(movieId),float(rating)
-            real_ratings[(userId, movieId)] = rating
+            res[(userId, movieId)] = rating
 
-            num_users=max(num_users, userId)
-            num_movies=max(num_movies, movieId)
+    return res
 
-    # read movies and get the number of them
-    # with open(consts.MOVIES) as file:
-    #     reader=list(csv.reader(file))
-    #     headers=reader[0]
-    #     reader=reader[1:]
-    #     num_movies=max(num_movies,len(reader))
+def getNumUsersItems(ratings: dict[tuple[int,int], float]) -> tuple[int,int]:
+    unum, inum=0,0
+    for u,i in ratings.keys():
+        unum=max(unum, u)
+        inum=max(inum, i)
+    return unum, inum
 
-    # print(real_ratings)
+if __name__=="__main__":
+    if not areDataComplete():
+        raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
 
-    SECOND_DIMENTIONS=15
-    model=funk_model.Funk(num_users+1, num_movies+1,SECOND_DIMENTIONS, 10**-12, 0.01, 0.005)  # +1 because the user is the 0th and ids are counted from 1
-    model.train(real_ratings, max_iterations=50)
-    print("koniec\n\n")
+    real_ratings:dict[tuple[int,int], float] = readRatings()
 
+    num_users:int = 0
+    num_movies:int = 0
+    num_users, num_movies=getNumUsersItems(real_ratings)
+
+    
+    model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 10**-8, 0.01, 0.005)  # +1 because the user is the 0th and ids are counted from 1
+    model.train(real_ratings, max_iterations=100)
+    
+    print("Predicions:\n")
     model.printPredictions()
 
     for u in range(model.nusers):

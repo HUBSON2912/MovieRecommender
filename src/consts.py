@@ -9,3 +9,5 @@ KEYWORDS:pth.Path = pth.Path("./data/keywords.csv")
 CREDITS:pth.Path = pth.Path("./data/credits.csv")
 
 REQURED_DATA:list[str]=[MOVIES.name, RATINGS.name, LINKS.name, KEYWORDS.name, CREDITS.name]
+
+SECOND_DIMENTIONS=15
