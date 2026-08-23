@@ -1,4 +1,3 @@
-import warnings
 import numpy as np
 import copy
 
@@ -17,7 +16,7 @@ class Funk:
         self.__Q:np.ndarray[np.ndarray[float]] = np.random.rand(secdim,nitems)
 
     def __predictionError(self, user, item): 
-        return self.trainData[user,item] - np.dot(self.__P[user], self.__Q.transpose()[item])
+        return self.trainData[user,item] - self.predict(user, item)
 
     
     def lossFunction(self):  # mean square error
@@ -54,9 +53,6 @@ class Funk:
             u,_=key
             try:
                 sum+=-2 * (self.trainData[(u,item)] - np.dot(self.__P[u], _QTransp[item])) * (self.__P[u])
-            except Warning:
-                print("warning")
-                continue
             except KeyError:
                 # skip not rated
                 continue
@@ -67,7 +63,8 @@ class Funk:
         return sum
 
     def __updateMatrix(self, iternum=None):
-        _QTransp:np.ndarray = copy.deepcopy(self.__Q.transpose())
+        _QTransp:np.ndarray = copy.deepcopy(self.__Q)
+        _QTransp=_QTransp.transpose()
         _counterPercent:int=0
         _keys=self.trainData.keys()
 
@@ -77,12 +74,13 @@ class Funk:
             qi_column = copy.deepcopy(_QTransp[i])
 
             # update
-            self.__P[u]=pu_row - self.learning_rate * (qi_column * self.__derivativeP(u) - self.__regulationParam * pu_row)
-            _QTransp[i]=qi_column - self.learning_rate * (pu_row * self.__derivativeQ(i) - self.__regulationParam * qi_column)
+            self.__P[u]=pu_row - (self.learning_rate * self.__derivativeP(u)) * qi_column  - self.learning_rate * self.__regulationParam * pu_row
+            _QTransp[i]=qi_column - pu_row * (self.__derivativeQ(i) * self.learning_rate) - self.learning_rate * self.__regulationParam * qi_column
 
             # progress info
-            if int((_counterPercent-1)/len(_keys)) != int(_counterPercent/len(_keys)):
-                print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(_counterPercent/len(_keys))}")
+            if int(100*(_counterPercent-1)/len(_keys)) != int(100*_counterPercent/len(_keys)):
+                print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
+            
         self.__Q=_QTransp.transpose()
 
     def train(self, ratings:dict[tuple[int,int], float], max_iterations=100, error_tolerance=1e-3):
@@ -97,8 +95,6 @@ class Funk:
             if error<error_tolerance:
                 print("Error tolerance reached")
                 break
-
-
 
     def predict(self, user:int, item:int) -> float:
         return np.dot(self.__P[user], self.__Q.transpose()[item])
