@@ -1,3 +1,5 @@
+import datetime
+import pickle
 import csv
 import os
 import consts
@@ -13,6 +15,17 @@ def areDataComplete() -> bool:
             return False
     return True
 
+def getRatings() -> dict[tuple[int,int], float]:
+    real_ratings:dict[tuple[int,int], float] = dict()
+    with open(consts.RATINGS) as file:
+        reader=list(csv.reader(file))
+        headers=reader[0]
+        reader=reader[1:]
+        for userId,movieId,rating,_ in reader:
+            userId,movieId,rating = int(userId),int(movieId),float(rating)
+            real_ratings[(userId, movieId)] = rating
+    
+    return real_ratings
 
 if __name__=="__main__":
     if not areDataComplete():
@@ -34,32 +47,36 @@ if __name__=="__main__":
     #         # print(type(cast(custom_types.Movie, movie_object)))
     #         custom_types.Movie.dictToMovie(movie_object)
     #         # print(custom_types.Movie.dictToMovie(movie_object))
+
     num_users:int = 0
     num_movies:int = 0
 
-    # read ratings
-    real_ratings:dict[tuple[int,int], float] = dict()
-    with open(consts.RATINGS) as file:
-        reader=list(csv.reader(file))
-        headers=reader[0]
-        reader=reader[1:]
-        for userId,movieId,rating,_ in reader:
-            userId,movieId,rating = int(userId),int(movieId),float(rating)
-            real_ratings[(userId, movieId)] = rating
-
-            num_users=max(num_users, userId)
+    real_ratings:dict[tuple[int,int], float] = getRatings()
 
     # read movies and get the number of them
     with open(consts.MOVIES) as file:
         reader=list(csv.reader(file))
         headers=reader[0]
         reader=reader[1:]
-        num_movies=len(reader)
+        num_movies=max(num_movies,len(reader))
 
-    # print(real_ratings)
+    SECOND_DIMENTIONS=5
+    model=funk_model.Funk(num_users+1, num_movies+1,SECOND_DIMENTIONS, 1e-8, 0.1)  # +1 because the user is the 0th and ids are counted from 1
+    model.train(real_ratings)
+    print("koniec\n\n")
+    # print(np.cross(model.P, model.Q),axisa=0, axisb=0)
+    for u in range(model.nusers):
+        print(f"{u}: ",end="")
+        for i in range(model.nitems):
+            print(np.dot(model.P[u], model.Q.transpose()[i]), end=";")
+        print()
+    print("\n\n\n")
 
-    model=funk_model.Funk(num_users, num_movies, 100)
-    print(model.P)
-    print(model.P.shape)
-    print(model.Q)
-    print(model.Q.shape)
+    for u in range(model.nusers):
+        for i in range(model.nitems):
+            if (u,i) in real_ratings.keys():
+                Rp=np.dot(model.P[u], model.Q.transpose()[i])
+                R=real_ratings[(u,i)]
+                print(f"{(u,i)}:\tR={R}\tR'={Rp}\tdR={Rp-R}")
+    # with open(f"./model{datetime.datetime.now()}", "w") as file:
+    #     pickle.(model,file)
