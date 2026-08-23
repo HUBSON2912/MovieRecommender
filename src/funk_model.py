@@ -34,11 +34,9 @@ class Funk:
             _,i=key
             try:
                 sum+=-2 * (self.trainData[(user,i)] - np.dot(self.__P[user], _QTransp[i])) * (_QTransp[i])
-            except Warning:
-                print("warning")
-                continue
             except KeyError:
                 # skip not rated
+                # does it ever happen?
                 continue
 
         sum=sum/self.nitems
@@ -98,4 +96,11 @@ class Funk:
 
     def predict(self, user:int, item:int) -> float:
         return np.dot(self.__P[user], self.__Q.transpose()[item])
+
+    def printPredictions(self):
+        for u in range(self.nusers):
+            print(f"{u}: ",end="")
+            for i in range(self.nitems):
+                print(self.predict(u,i), end=";")
+            print()
     
