@@ -17,8 +17,7 @@ class Funk:
 
     def __predictionError(self, user, item): 
         return self.trainData[user,item] - self.predict(user, item)
-
-    
+   
     def lossFunction(self):  # mean square error
         sum=0
         keys:list[tuple[int,int]]=self.trainData.keys()
@@ -72,8 +71,10 @@ class Funk:
             qi_column = copy.deepcopy(_QTransp[i])
 
             # update
-            self.__P[u]=pu_row - (self.learning_rate * self.__derivativeP(u)) * qi_column  - self.learning_rate * self.__regulationParam * pu_row
-            _QTransp[i]=qi_column - pu_row * (self.__derivativeQ(i) * self.learning_rate) - self.learning_rate * self.__regulationParam * qi_column
+            err=self.__predictionError(u,i)
+            self.__P[u] = pu_row + self.learning_rate * err * qi_column
+            _QTransp[i] = qi_column + self.learning_rate * err * pu_row
+
 
             # progress info
             if int(100*(_counterPercent-1)/len(_keys)) != int(100*_counterPercent/len(_keys)):

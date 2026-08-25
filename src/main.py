@@ -1,5 +1,8 @@
-# fix it has overflow on dot product in model with bigger data
-# for some reason the values in matrix Q grows really fast
+# now it necessary too much ram
+# i need to reduce the data set
+# idea: use only moviesID<=15000 but each movie 
+# has to have +- the same amount of ratings and 
+# each user has to rate +- the same amount of movies
 
 import csv
 import os
@@ -43,8 +46,8 @@ if __name__=="__main__":
     num_users, num_movies=getNumUsersItems(real_ratings)
 
     
-    model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 10**-8, 0.01, 0.005)  # +1 because the user is the 0th and ids are counted from 1
-    model.train(real_ratings, max_iterations=100)
+    model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 10**-8, 0.01, 0.0001)  # +1 because the user is the 0th and ids are counted from 1
+    model.train(real_ratings, max_iterations=1000)
     
     print("Predicions:\n")
     model.printPredictions()
