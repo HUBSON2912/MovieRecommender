@@ -1,6 +1,7 @@
 import pathlib as pth
 
 DATA_DIR=pth.Path("./data")
+SAVE_DIR=pth.Path("./saved")
 
 MOVIES:pth.Path = pth.Path("./data/movies_metadata.csv")
 RATINGS:pth.Path = pth.Path("./data/ratings_small.csv")  # "ratings.csv"

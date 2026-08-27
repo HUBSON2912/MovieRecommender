@@ -43,10 +43,11 @@ if __name__=="__main__":
 
     
     model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 0.01, 0.001, 0.001)  # +1 because the user is the 0th and ids are counted from 1
-    model.train(real_ratings, max_iterations=100)
+    model.saveModel()
+    # model.train(real_ratings, max_iterations=100)
     
     print("Predicions:\n")
-    model.printPredictions()
+    # model.printPredictions()
 
     # for u in range(model.nusers):
     #     for i in range(model.nitems):

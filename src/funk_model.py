@@ -1,6 +1,11 @@
+import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
+import datetime
+import consts
+from pathlib import Path
+from typing import Optional
 
 class Funk:
     def __init__(self, nusers:int, nitems:int, secdim:int, regulation_param:float, learn_rate:float, learn_rate_decay=0.05):
@@ -47,8 +52,8 @@ class Funk:
             self.__Q[:,i] = qi_col + self.learning_rate*(error*pu_row - self.__regulationParam*qi_col)
 
             # progress info
-            if int(100*(_counterPercent-1)/len(_keys)) != int(100*_counterPercent/len(_keys)):
-                print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
+            # if int(100*(_counterPercent-1)/len(_keys)) != int(100*_counterPercent/len(_keys)):
+            #     print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
 
     def train(self, ratings:dict[tuple[int,int], float], max_iterations=100, error_tolerance=1e-3):
         self.trainData=ratings
@@ -76,4 +81,18 @@ class Funk:
         plt.show()
 
         print(np.matmul(self.__P, self.__Q))
-    
+
+    def save(self, name:Optional[str]=None):
+        savePath:Path=consts.SAVE_DIR
+        if not (name is None):
+            savePath=savePath / f"{name}.bin"
+        else:
+            now=datetime.datetime.now()
+            savePath = savePath / f"funk-model-{now.year}-{now.month}-{now.day}T{now.hour}:{now.minute}:{now.second}.bin"
+
+        with open(savePath, "wb") as saveFile:
+            pickle.dump(self, saveFile)
+
+if __name__=="__main__":
+    model=Funk(3,3,1,0.1,0.1)
+    model.saveModel()
