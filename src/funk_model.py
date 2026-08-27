@@ -1,3 +1,5 @@
+from __future__ import annotations
+import os
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,6 +23,10 @@ class Funk:
         self.__P:np.ndarray[np.ndarray[float]] = np.random.rand(nusers,secdim)
         self.__Q:np.ndarray[np.ndarray[float]] = np.random.rand(secdim,nitems)
         self.__errors:list[float]=[]
+
+    @staticmethod
+    def getDummy():
+        return Funk(1,1,1,1,1,1)
 
     def __predictionError(self, user, item): 
         return self.trainData[user,item] - self.predict(user, item)
@@ -91,8 +97,23 @@ class Funk:
             savePath = savePath / f"funk-model-{now.year}-{now.month}-{now.day}T{now.hour}:{now.minute}:{now.second}.bin"
 
         with open(savePath, "wb") as saveFile:
-            pickle.dump(self, saveFile)
+            pickle.dump(self.__dict__, saveFile)
+
+    @staticmethod
+    def load(path:Path) -> Funk:
+        if not path.exists():
+            raise FileNotFoundError(f"File '{path}' doesn't exist")
+
+        with open(path, "rb") as saved:
+            tmpDict=pickle.load(saved)
+            loaded=Funk.getDummy() # dump values
+            loaded.__dict__.clear()
+            loaded.__dict__.update(tmpDict)
+            return loaded
 
 if __name__=="__main__":
-    model=Funk(3,3,1,0.1,0.1)
-    model.saveModel()
+    # model=Funk(3,3,1,0.1,0.1)
+    # model.save()
+    # print(fu)
+    model=Funk.load(Path("./saved/funk-model-2026-8-27T21:41:20.bin"))
+    print(model.__dict__)
