@@ -1,8 +1,9 @@
 # now it necessary too much ram
 # i need to reduce the data set
-# idea: use only moviesID<=15000 but each movie 
-# has to have +- the same amount of ratings and 
-# each user has to rate +- the same amount of movies
+
+# idea: use different model 
+# - read about biased SVD 
+# - use regularization parameter
 
 import csv
 import os
@@ -24,6 +25,8 @@ def readRatings() -> dict[tuple[int,int], float]:
         reader=reader[1:]
         for userId,movieId,rating,_ in reader:
             userId,movieId,rating = int(userId),int(movieId),float(rating)
+            if movieId>15000:
+                continue
             res[(userId, movieId)] = rating
 
     return res
@@ -46,8 +49,8 @@ if __name__=="__main__":
     num_users, num_movies=getNumUsersItems(real_ratings)
 
     
-    model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 10**-8, 0.01, 0.0001)  # +1 because the user is the 0th and ids are counted from 1
-    model.train(real_ratings, max_iterations=1000)
+    model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 10**-8, 0.01, 0.001)  # +1 because the user is the 0th and ids are counted from 1
+    model.train(real_ratings, max_iterations=50)
     
     print("Predicions:\n")
     model.printPredictions()

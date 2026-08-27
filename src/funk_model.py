@@ -32,55 +32,55 @@ class Funk:
         for key in self.trainData.keys():
             _,i=key
             try:
-                sum+=-2 * (self.trainData[(user,i)] - np.dot(self.__P[user], _QTransp[i])) * (_QTransp[i])
+                sum += -2 * (self.__predictionError(user, i)) * _QTransp[i]
             except KeyError:
                 # skip not rated
                 # does it ever happen?
                 continue
-
-        sum=sum/self.nitems
-        sum+=2*self.__regulationParam*self.__P[user]
+        
+        sum += 2*self.__regulationParam*self.__P[user]
 
         return sum
 
     def __derivativeQ(self, item) -> np.ndarray:
         sum:np.ndarray = np.zeros((self.secdim,))
-        _QTransp=self.__Q.transpose()
+
         for key in self.trainData.keys():
             u,_=key
             try:
-                sum+=-2 * (self.trainData[(u,item)] - np.dot(self.__P[u], _QTransp[item])) * (self.__P[u])
+                sum += -2 * self.__predictionError(u, item) * self.__P[u]
             except KeyError:
                 # skip not rated
                 continue
 
-        sum=sum/self.nusers
-        sum+=2*self.__regulationParam*_QTransp[item]
+        sum+=2*self.__regulationParam*self.__Q.transpose()[item]
 
         return sum
 
     def __updateMatrix(self, iternum=None):
-        _QTransp:np.ndarray = copy.deepcopy(self.__Q)
-        _QTransp=_QTransp.transpose()
+        _PCPY:np.ndarray=copy.deepcopy(self.__P)
+        _QTranspCPY:np.ndarray = copy.deepcopy(self.__Q)
+        _QTranspCPY=_QTranspCPY.transpose()
+
         _counterPercent:int=0
         _keys=self.trainData.keys()
 
         for u,i in _keys:
             _counterPercent+=1
-            pu_row=copy.deepcopy(self.__P[u])
-            qi_column = copy.deepcopy(_QTransp[i])
+            pu_row=copy.deepcopy(_PCPY[u])
+            qi_column = copy.deepcopy(_QTranspCPY[i])
 
             # update
-            err=self.__predictionError(u,i)
-            self.__P[u] = pu_row + self.learning_rate * err * qi_column
-            _QTransp[i] = qi_column + self.learning_rate * err * pu_row
+            _PCPY[u] = pu_row - self.learning_rate * self.__derivativeP(u)
+            _QTranspCPY[i] = qi_column - self.learning_rate * self.__derivativeQ(i)
 
 
             # progress info
             if int(100*(_counterPercent-1)/len(_keys)) != int(100*_counterPercent/len(_keys)):
                 print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
-            
-        self.__Q=_QTransp.transpose()
+
+        self.__P=_PCPY
+        self.__Q=_QTranspCPY.transpose()
 
     def train(self, ratings:dict[tuple[int,int], float], max_iterations=100, error_tolerance=1e-3):
         self.trainData=ratings

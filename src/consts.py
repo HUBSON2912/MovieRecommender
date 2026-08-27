@@ -10,4 +10,4 @@ CREDITS:pth.Path = pth.Path("./data/credits.csv")
 
 REQURED_DATA:list[str]=[MOVIES.name, RATINGS.name, LINKS.name, KEYWORDS.name, CREDITS.name]
 
-SECOND_DIMENTIONS=10000
+SECOND_DIMENTIONS=20
