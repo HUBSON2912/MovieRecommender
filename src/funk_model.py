@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import copy
 
 class Funk:
@@ -14,11 +15,12 @@ class Funk:
 
         self.__P:np.ndarray[np.ndarray[float]] = np.random.rand(nusers,secdim)
         self.__Q:np.ndarray[np.ndarray[float]] = np.random.rand(secdim,nitems)
+        self.__errors:list[float]=[]
 
     def __predictionError(self, user, item): 
         return self.trainData[user,item] - self.predict(user, item)
    
-    def lossFunction(self):  # mean square error
+    def lossFunction(self):
         sum=0
         keys:list[tuple[int,int]]=self.trainData.keys()
         for key in keys:
@@ -26,61 +28,27 @@ class Funk:
         
         return sum/len(keys)
 
-    def __derivativeP(self, user) -> np.ndarray:
-        sum:np.ndarray = np.zeros((self.secdim,))
-        _QTransp=self.__Q.transpose()
-        for key in self.trainData.keys():
-            _,i=key
-            try:
-                sum += -2 * (self.__predictionError(user, i)) * _QTransp[i]
-            except KeyError:
-                # skip not rated
-                # does it ever happen?
-                continue
-        
-        sum += 2*self.__regulationParam*self.__P[user]
-
-        return sum
-
-    def __derivativeQ(self, item) -> np.ndarray:
-        sum:np.ndarray = np.zeros((self.secdim,))
-
-        for key in self.trainData.keys():
-            u,_=key
-            try:
-                sum += -2 * self.__predictionError(u, item) * self.__P[u]
-            except KeyError:
-                # skip not rated
-                continue
-
-        sum+=2*self.__regulationParam*self.__Q.transpose()[item]
-
-        return sum
-
     def __updateMatrix(self, iternum=None):
-        _PCPY:np.ndarray=copy.deepcopy(self.__P)
-        _QTranspCPY:np.ndarray = copy.deepcopy(self.__Q)
-        _QTranspCPY=_QTranspCPY.transpose()
-
         _counterPercent:int=0
         _keys=self.trainData.keys()
 
         for u,i in _keys:
             _counterPercent+=1
-            pu_row=copy.deepcopy(_PCPY[u])
-            qi_column = copy.deepcopy(_QTranspCPY[i])
+
+            error=self.__predictionError(u,i)
+            pu_row=copy.deepcopy(self.__P[u])
+            qi_col=copy.deepcopy(self.__Q[:, i])
 
             # update
-            _PCPY[u] = pu_row - self.learning_rate * self.__derivativeP(u)
-            _QTranspCPY[i] = qi_column - self.learning_rate * self.__derivativeQ(i)
-
+            # earlier the derivatives were using the sum so if one 
+            # user rated 100 movies and the other rated 5 it has an impact 
+            # (error*vec) is a part of derivative so it's not bad
+            self.__P[u] = pu_row + self.learning_rate*(error*qi_col - self.__regulationParam*pu_row)
+            self.__Q[:,i] = qi_col + self.learning_rate*(error*pu_row - self.__regulationParam*qi_col)
 
             # progress info
             if int(100*(_counterPercent-1)/len(_keys)) != int(100*_counterPercent/len(_keys)):
                 print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
-
-        self.__P=_PCPY
-        self.__Q=_QTranspCPY.transpose()
 
     def train(self, ratings:dict[tuple[int,int], float], max_iterations=100, error_tolerance=1e-3):
         self.trainData=ratings
@@ -89,6 +57,7 @@ class Funk:
             error = self.lossFunction()
 
             self.learning_rate = self.__initialLearningRate/(1+i*self.__learningRateDecay)
+            self.__errors.append(error)
 
             print(f"===========================\nIteration {i+1} finished\nError = {error}\n===========================")
             if error<error_tolerance:
@@ -99,5 +68,12 @@ class Funk:
         return np.dot(self.__P[user], self.__Q.transpose()[item])
 
     def printPredictions(self):
+        fig, ax = plt.subplots()
+        x,y=list(range(len(self.__errors))), self.__errors
+        ax.plot(x,y)
+        ax.grid()
+        ax.set(title="Error in each iteration")
+        plt.show()
+
         print(np.matmul(self.__P, self.__Q))
     
