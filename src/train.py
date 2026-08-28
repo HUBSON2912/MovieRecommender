@@ -40,18 +40,9 @@ if __name__=="__main__":
     num_users:int = 0
     num_movies:int = 0
     num_users, num_movies=getNumUsersItems(real_ratings)
-
     
     model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 0.01, 0.001, 0.001)  # +1 because the user is the 0th and ids are counted from 1
     model.train(real_ratings, max_iterations=100)
     model.save()
     
-    print("Predicions:\n")
     model.printPredictions()
-
-    # for u in range(model.nusers):
-    #     for i in range(model.nitems):
-    #         if (u,i) in real_ratings.keys():
-    #             Rp=model.predict(u,i)
-    #             R=real_ratings[(u,i)]
-    #             print(f"{(u,i)}:\tR={R}\tR'={Rp}\tdR={Rp-R}")

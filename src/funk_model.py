@@ -1,5 +1,4 @@
 from __future__ import annotations
-import os
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
@@ -58,8 +57,9 @@ class Funk:
             self.__Q[:,i] = qi_col + self.learning_rate*(error*pu_row - self.__regulationParam*qi_col)
 
             # progress info
-            # if int(100*(_counterPercent-1)/len(_keys)) != int(100*_counterPercent/len(_keys)):
-            #     print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
+            # every 10%
+            if int(10*(_counterPercent-1)/len(_keys)) != int(10*_counterPercent/len(_keys)):
+                print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
 
     def train(self, ratings:dict[tuple[int,int], float], max_iterations=100, error_tolerance=1e-3):
         self.trainData=ratings
@@ -79,6 +79,7 @@ class Funk:
         return np.dot(self.__P[user], self.__Q.transpose()[item])
 
     def printPredictions(self):
+        # error graph
         fig, ax = plt.subplots()
         x,y=list(range(len(self.__errors))), self.__errors
         ax.plot(x,y)
@@ -86,7 +87,16 @@ class Funk:
         ax.set(title="Error in each iteration")
         plt.show()
 
+        # every prediction
+        print("Predicions:\n")
         print(np.matmul(self.__P, self.__Q))
+
+        # error for each input data
+        print("Error for input:\n")
+        for u,i in self.trainData.keys():
+            Rp=self.predict(u,i)
+            R=self.trainData[(u,i)]
+            print(f"{(u,i)}:\tR={R}\tR'={Rp}\tdR={Rp-R}")
 
     def save(self, name:Optional[str]=None):
         savePath:Path=consts.SAVE_DIR
@@ -110,10 +120,3 @@ class Funk:
             loaded.__dict__.clear()
             loaded.__dict__.update(tmpDict)
             return loaded
-
-if __name__=="__main__":
-    # model=Funk(3,3,1,0.1,0.1)
-    # model.save()
-    # print(fu)
-    model=Funk.load(Path("./saved/funk-model-2026-8-27T21:41:20.bin"))
-    print(model.__dict__)
