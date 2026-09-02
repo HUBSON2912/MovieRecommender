@@ -1,0 +1,21 @@
+.bar {
+    height: 25px;
+    width: 700px;
+    padding: 5px;
+    font-size: 20px;
+    background-color: var(--md-sys-color-surface-variant);
+    color: var(--md-sys-color-on-surface-variant);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 3px;
+    outline: none;
+
+    background-image: url("../assets/search.svg");
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    padding-left: 35px;
+}
+
+.bar:focus {
+    /* border: 2px solid var(--md-sys-color-primary); */
+    outline: 1px var(--md-sys-color-outline) solid;
+}
