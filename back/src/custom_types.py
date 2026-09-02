@@ -25,26 +25,12 @@ class Language(typing.TypedDict):
 
 class Movie(typing.TypedDict):
     adult:bool
-    belongs_to_collection: typing.Optional[Collection]
-    budget:int
     genres:list[Genre]
-    homepage: typing.Optional[str]
     id:int
-    imdb_id:str
-    original_language:str
-    original_title:str
     overview:typing.Optional[str]
     popularity:float
-    poster_path:str
-    production_companies:list[Company]
-    production_countries:list[Country]
+    poster_path:typing.Optional[str]  # image.tmdb.org api -> developer.themoviedb.org/docs/image-basics
     release_date:datetime.date
-    revenue:int
-    runtime:float
-    spoken_languages:list[Language]
-    status:str
-    tagline:typing.Optional[str]
     title:str
-    video:bool
     vote_average:float
     vote_count:int
