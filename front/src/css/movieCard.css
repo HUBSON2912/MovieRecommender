@@ -1,3 +1,5 @@
+@import url("dark.css");
+
 .movieDataHeader {
     display: flex;
     flex-direction: row;
@@ -22,7 +24,7 @@
 }
 
 .movieImage {
-    border-radius: 5px;
+    border-radius: var(--mui-theme-shape-border-raduis);
 }
 
 

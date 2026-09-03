@@ -10,6 +10,14 @@ export default function SearchPage() {
         setSearchTextInput(event.currentTarget.value);
     }
 
+    const [rating, setRating] = useState<number | null>(null);
+    const handleRate = (event: React.SyntheticEvent, value: number | null) => {
+        console.log(value);
+        setRating(value);
+        // todo change value type to {id: int, value:int|null}
+        // todo save in file or localstorage
+    }
+
     useEffect(() => {
         // < 2 to catch movies like IT or E.T.
         if (searchTextInput.length < 2)
@@ -37,7 +45,7 @@ export default function SearchPage() {
     return (
         <>
             <SearchBar value={searchTextInput} onChange={handleWriting} />
-            <MovieCard movie={movie} />
+            <MovieCard movie={movie} onRate={handleRate} />
         </>
     );
 }

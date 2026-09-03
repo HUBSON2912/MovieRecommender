@@ -1,9 +1,9 @@
 import type { Movie } from "../types";
 import "../css/movieCard.css";
-import { Box, Typography, type SxProps } from "@mui/material";
+import { Box, Rating, Typography, type SxProps } from "@mui/material";
 import type { Theme } from "@emotion/react";
 
-export default function MovieCard({ movie }: { movie: Movie }) {
+export default function MovieCard({ movie, onRate }: { movie: Movie, onRate: (event: React.SyntheticEvent, value: number|null)=>void }) {
     let voteRank: string;
     if (movie.vote_average >= 7.5)
         voteRank = "rank1";
@@ -34,9 +34,22 @@ export default function MovieCard({ movie }: { movie: Movie }) {
                         movie.genres.map((gen, index) => gen.name + (index + 1 != movie.genres.length ? ", " : ""))
                     }
                 </Typography>
-                <Typography component="p" sx={style.movieDataInfo}>
+                {/* <Typography component="p" sx={style.movieDataInfo}>
                     Vote: <Typography component="span" sx={{ fontSize: "18px" }} className={voteRank}>{movie.vote_average}</Typography> ({movie.vote_count} votes)
-                </Typography>
+                </Typography> */}
+                <Box sx={style.movieRating}>
+                    <Rating 
+                        name="vote" 
+                        defaultValue={movie.vote_average/2}  // movie has rating 0-10 and there are 5 stars
+                        precision={0.1}
+                        onChange={onRate}
+                        // todo if rated then secondary
+                        // todo if rated then "clear" button
+                    />
+                    <Typography sx={style.movieDataInfo}>
+                        ({movie.vote_count} votes)
+                    </Typography>
+                </Box>
                 <Typography component="p" sx={style.movieDescription}>
                     {movie.overview ?? "Missing description"}
                 </Typography>
@@ -65,5 +78,11 @@ const style: Record<string, SxProps<Theme>> = {
     movieDescription: {
         fontSize: "22px",
         marginTop: "15px"
+    },
+    movieRating: {
+        display:"flex",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: "15px"
     }
 }
