@@ -1,5 +1,7 @@
 import type { Movie } from "../types";
 import "../css/movieCard.css";
+import { Box, Typography, type SxProps } from "@mui/material";
+import type { Theme } from "@emotion/react";
 
 export default function MovieCard({ movie }: { movie: Movie }) {
     let voteRank: string;
@@ -13,28 +15,55 @@ export default function MovieCard({ movie }: { movie: Movie }) {
         voteRank = "rank4";
 
     return (
-        <div className="cardContainer">
-                <img className="movieImage" height="400" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="Cannot load the image" />
+        <Box component="section" className="cardContainer" sx={style.cardContainer} >
+            <img className="movieImage" height="400" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="Cannot load the image" />
             <div className="movieData">
                 <div className="movieDataHeader">
-                    <h2>{movie.title}</h2>
-                    ({movie.release_date.getFullYear()})
+                    <Typography component="h2">
+                        {movie.title}
+                    </Typography>
+                    <Typography>
+                        ({movie.release_date.getFullYear()})
+                    </Typography>
                 </div>
-                <p className="movieDataTags">
+                <Typography component="p" sx={style.movieDataInfo}>
                     {
                         movie.adult ? "ADULT, " : ""
                     }
                     {
                         movie.genres.map((gen, index) => gen.name + (index + 1 != movie.genres.length ? ", " : ""))
                     }
-                </p>
-                <p className="movieDataVotes">
-                    Vote: <span className={voteRank}>{movie.vote_average}</span> ({movie.vote_count} votes)
-                </p>
-                <p>
+                </Typography>
+                <Typography component="p" sx={style.movieDataInfo}>
+                    Vote: <Typography component="span" sx={{ fontSize: "18px" }} className={voteRank}>{movie.vote_average}</Typography> ({movie.vote_count} votes)
+                </Typography>
+                <Typography component="p" sx={style.movieDescription}>
                     {movie.overview ?? "Missing description"}
-                </p>
+                </Typography>
             </div>
-        </div>
+        </Box>
     );
+}
+
+const style: Record<string, SxProps<Theme>> = {
+    cardContainer: {
+        /* background-color: var(--md-sys-color-surface-bright); */
+        backgroundColor: "background.paper",
+        margin: "20px",
+        flexDirection: "row",
+        display: "flex",
+        width: 0.6,
+        /* border: 1px solid var(--md-sys-color-outline), */
+        gap: "15px",
+        borderRadius: 1
+    },
+    movieDataInfo: {
+        margin: 0,
+        padding: 0,
+        fontSize: "18px",
+    },
+    movieDescription: {
+        fontSize: "22px",
+        marginTop: "15px"
+    }
 }

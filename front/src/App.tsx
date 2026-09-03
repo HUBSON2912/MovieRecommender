@@ -30,7 +30,7 @@ function App() {
 const styles: Record<string, SxProps<Theme>> = {
     container: {
         color: "text.primary",
-        backgroundColor: "background.paper",
+        backgroundColor: "background.default",
         height: "100vh",
         fontSize: 22,
         width: 1

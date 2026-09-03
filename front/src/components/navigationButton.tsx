@@ -19,7 +19,7 @@ export default function NavigationButton({ text }: { text: Page }) {
     return (
         <Chip
             label={text}
-            sx={{ cursor: "pointer", fontSize: 24 }}
+            sx={{ cursor: "pointer", fontSize: 24, paddingX: "8px" }}
             variant={currentPage.page == text ? "filled" : "outlined"}
             color="primary"
             onClick={handleClick}

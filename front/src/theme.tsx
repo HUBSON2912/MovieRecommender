@@ -9,5 +9,18 @@ export const theme = createTheme({
     secondary: {
       main: '#43DEDE',
     },
+    text: {
+      primary: '#ffffff',
+    },
+    background: {
+      paper: '#3a3939',
+    },
+  },
+  shape: {
+    borderRadius: 5,
+  },
+  typography: {
+    fontFamily: 'Slabo 27px',
+    fontSize: 24
   },
 });

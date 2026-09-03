@@ -14,6 +14,7 @@ export default function SearchBar({ value, onChange }:
             sx={{ width: 0.3 }}
             slotProps={{ input: { sx: { fontSize: 22 } } }}
             placeholder="Search a movie"
+            size="small"
         />
     );
 }
