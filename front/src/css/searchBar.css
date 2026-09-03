@@ -3,9 +3,9 @@
     width: 700px;
     padding: 5px;
     font-size: 20px;
-    background-color: var(--md-sys-color-surface-variant);
-    color: var(--md-sys-color-on-surface-variant);
-    border: 1px solid var(--md-sys-color-outline);
+    /* background-color: var(--md-sys-color-surface-variant); */
+    /* color: var(--md-sys-color-on-surface-variant); */
+    /* border: 1px solid var(--md-sys-color-outline); */
     border-radius: 3px;
     outline: none;
 

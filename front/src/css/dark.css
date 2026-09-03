@@ -1,10 +1,10 @@
 /* dark theme */
 
 html {
-  --md-sys-color-primary: rgb(255 179 174);
+  --md-sys-color-primary: #ffb3ae;
   --md-sys-color-surface-tint: rgb(255 179 174);
   --md-sys-color-on-primary: rgb(104 0 11);
-  --md-sys-color-primary-container: rgb(251 88 86);
+  --md-sys-color-primary-container: #fb5856;
   --md-sys-color-on-primary-container: #eeeeee;
   --md-sys-color-secondary: rgb(255 179 174);
   --md-sys-color-on-secondary: rgb(93 23 23);
