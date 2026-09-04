@@ -31,7 +31,7 @@ export default function MovieCard({ movie, onRate }: { movie: Movie, onRate: (ev
                         movie.adult ? "ADULT, " : ""
                     }
                     {
-                        movie.genres.map((gen, index) => gen.name + (index + 1 != movie.genres.length ? ", " : ""))
+                        movie.genres.map((gen, index) => gen + (index + 1 != movie.genres.length ? ", " : ""))
                     }
                 </Typography>
                 {/* <Typography component="p" sx={style.movieDataInfo}>

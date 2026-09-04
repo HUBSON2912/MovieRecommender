@@ -1,13 +1,17 @@
 from fastapi import FastAPI
+import consts
+from handledata import readMovies
 
 app = FastAPI()
-
+movies=readMovies()
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def status():
+    return {"status": "running"}
 
-import consts
+@app.get("/get/movies/{offset}")
+def readMovies(offset: int):
+    return movies[offset:offset+15]
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str | None = None):
