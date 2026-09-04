@@ -4,16 +4,16 @@ import custom_types
 
 
 def readMovies() -> list[custom_types.Movie]:
+    result:list[custom_types.Movie]=[]
     with open(consts.MOVIES) as inputFile:
         reader=list(csv.DictReader(inputFile))
         headers=reader[0]
         reader=reader[1:]
-        reader=list(filter(
+        result=list(filter(
                         lambda x: not (x is None), 
                         map(custom_types.Movie.transform, reader)
                     ))
-    
-        return reader
+    return result
 
 if __name__=="__main__":
     readMovies()

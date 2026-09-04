@@ -10,8 +10,9 @@ def status():
     return {"status": "running"}
 
 @app.get("/get/movies/{offset}")
-def readMovies(offset: int):
-    return movies[offset:offset+15]
+def readMovies(offset:int):
+    # return movies
+    return movies[offset:offset+consts.RETURN_MOVIES]
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str | None = None):

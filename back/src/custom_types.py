@@ -55,6 +55,7 @@ class Movie(typing.TypedDict):
         "adult": lambda str: str=="True",
         "genres": strToListOfGenre,
         "id": int,
+        "imdb_id": str,
         "overview": str,
         "popularity": float,
         "poster_path": str,
