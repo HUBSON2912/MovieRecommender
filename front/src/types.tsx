@@ -10,7 +10,7 @@ export type Movie = {
     overview: string,
     popularity: number,
     poster_path: string, // image.tmdb.org api -> developer.themoviedb.org/docs/image-basics
-    release_date: Date,
+    release_date: string,
     title: string,
     vote_average: number,
     vote_count: number

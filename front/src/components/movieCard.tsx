@@ -14,7 +14,8 @@ export default function MovieCard({ movie, onRate }: { movie: Movie, onRate: (ev
                         {movie.title}
                     </Typography>
                     <Typography>
-                        ({movie.release_date.getFullYear()})
+                        {/* just year */}
+                        ({movie.release_date.slice(0,4)}) 
                     </Typography>
                 </div>
                 <Typography component="p" sx={style.movieDataInfo}>

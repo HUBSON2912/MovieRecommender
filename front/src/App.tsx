@@ -32,7 +32,8 @@ const styles: Record<string, SxProps<Theme>> = {
     container: {
         color: "text.primary",
         backgroundColor: "background.default",
-        height: "100vh",
+        // height: "100vh",
+        minHeight: "100vh",
         fontSize: 22,
         width: 1
     },

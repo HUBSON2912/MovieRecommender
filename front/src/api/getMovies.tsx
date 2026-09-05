@@ -8,10 +8,8 @@ export async function getMovies(offset:number=0) : Promise<Movie[]> {
         if(!servResponse.ok) {
             throw new Error(`Response status ${servResponse.status}`);
         }
-        console.log(servResponse);
 
         const movies:Movie[]=await servResponse.json();
-        console.log(movies);
         return movies;
     }
     catch(error) {
