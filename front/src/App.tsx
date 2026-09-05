@@ -12,6 +12,7 @@ export const CurrentPageContext = createContext<PageContextType>({ page: "search
 
 function App() {
     const [currentPage, setCurrentPage] = useState<Page>("search");
+    
 
     return (
         <CurrentPageContext value={{ page: currentPage, setPage: setCurrentPage }}>

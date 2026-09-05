@@ -10,7 +10,7 @@ def status():
     return {"status": "running"}
 
 @app.get("/get/movies/{offset}")
-def readMovies(offset:int):
+def getMovies(offset:int):
     # return movies
     return movies[offset:offset+consts.RETURN_MOVIES]
 

@@ -1,0 +1,1 @@
+export const ENDPOINT="www.api.hs.pl";
