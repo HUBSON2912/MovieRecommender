@@ -15,10 +15,13 @@ def readMovies() -> list[custom_types.Movie]:
                         map(custom_types.Movie.transform, reader)
                     ))
     
-    result.sort(key=lambda x: x["popularity"], reverse=True)
+    result.sort(key=lambda x: x.popularity, reverse=True)
     return result
 
 if __name__=="__main__":
-    print(readMovies()[0])
+    odp=readMovies()
+    print(type(odp))
+    print(type(odp[0]))
+    assert isinstance(odp[0], custom_types.BaseModel)
 
 # adult,belongs_to_collection,budget,genres,homepage,id,imdb_id,original_language,original_title,overview,popularity,poster_path,production_companies,production_countries,release_date,revenue,runtime,spoken_languages,status,tagline,title,video,vote_average,vote_count

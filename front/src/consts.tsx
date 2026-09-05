@@ -1,1 +1,1 @@
-export const ENDPOINT="www.api.hs.pl";
+export const ENDPOINT="http://localhost:8000";

@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import SearchBar from "../components/searchBar";
 import MovieCard from "../components/movieCard";
 import { useEffect, useState } from "react";
@@ -45,8 +45,8 @@ export default function SearchPage() {
     return (
         <>
             <SearchBar value={searchTextInput} onChange={handleWriting} />
-            {/* <MovieCard movie={movie} onRate={handleRate} /> */}
             <Button variant="contained" onClick={() => { getMovies(0) }} >Click</Button>
+            <MovieCard movie={movie} onRate={handleRate} />
         </>
     );
 }

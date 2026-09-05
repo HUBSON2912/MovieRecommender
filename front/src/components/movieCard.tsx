@@ -4,15 +4,6 @@ import { Box, Rating, Typography, type SxProps } from "@mui/material";
 import type { Theme } from "@emotion/react";
 
 export default function MovieCard({ movie, onRate }: { movie: Movie, onRate: (event: React.SyntheticEvent, value: number|null)=>void }) {
-    let voteRank: string;
-    if (movie.vote_average >= 7.5)
-        voteRank = "rank1";
-    else if (movie.vote_average >= 5)
-        voteRank = "rank2";
-    else if (movie.vote_average >= 2.5)
-        voteRank = "rank3";
-    else
-        voteRank = "rank4";
 
     return (
         <Box component="section" className="cardContainer" sx={style.cardContainer} >

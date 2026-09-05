@@ -1,4 +1,4 @@
-import { useContext, type MouseEventHandler } from "react";
+import { useContext} from "react";
 import "../css/navigation.css";
 import { CurrentPageContext } from "../App";
 import type { Page } from "../types";
