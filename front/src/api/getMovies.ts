@@ -15,6 +15,6 @@ export async function getMovies(offset:number=0) : Promise<Movie[]> {
     }
     catch(error) {
         console.error("Unexpected error in getMovies().", error);
-        return []
+        throw error;
     }
 }

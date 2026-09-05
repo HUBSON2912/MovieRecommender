@@ -5,25 +5,40 @@ import { useEffect, useState } from "react";
 import type { Movie } from "../types";
 import { getMovies } from "../api/getMovies";
 import { searchMovie } from "../api/searchMovie";
+import SomethingWentWrong from "../components/sthWentWrong";
 
 export default function SearchPage() {
+    // errors
+    const [isError, setIsError] = useState<boolean>(false);
+    const handleRefresh = () => {
+        setSearchTextInput("");
+        setFoundMovies(null);
+        setRating(null);
+        setLoadedMovies([]);
+        setIsError(false);
+
+        handleLoadMoreMovies("set");
+    }
+
+    // searching logic
     const [searchTextInput, setSearchTextInput] = useState<string>("");
     const [foundMovies, setFoundMovies] = useState<Movie[] | null>(null);
     const handleWriting = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newVal = event.currentTarget.value;
-        setSearchTextInput(newVal);
-
-        if (newVal.length == 0) {
-            setFoundMovies(null); // clear searching results
-        }
-        console.log("found:", foundMovies)
-        console.log("loaded:", loadedMovies)
+        setSearchTextInput(event.target.value);
     }
     const handleSearching = () => {
-        searchMovie(searchTextInput).then(res => setLoadedMovies(res)).catch(err => console.error(err));
+        searchMovie(searchTextInput)
+            .then(res => setFoundMovies(res))
+            .catch(() => {
+                setIsError(true);
+            });
+    }
+    const handleClearingSearchBar = () => {
+        setSearchTextInput("");
+        setFoundMovies(null);
     }
 
-
+    // rating logic
     const [rating, setRating] = useState<number | null>(null);
     const handleRate = (event: React.SyntheticEvent, value: number | null) => {
         console.log(value);
@@ -32,8 +47,7 @@ export default function SearchPage() {
         // todo save in file or localstorage
     }
 
-
-
+    // simple loading movies logic
     const [loadedMovies, setLoadedMovies] = useState<Movie[]>([]);
     const handleLoadMoreMovies = (mode: "set" | "append") => {
         getMovies(loadedMovies.length)
@@ -43,24 +57,39 @@ export default function SearchPage() {
                 else
                     setLoadedMovies(prev => [...prev, ...res])
             })
-            .catch(err => console.error(err));
+            .catch(() => {
+                setIsError(true);
+            });
     }
     // load movies on load
     useEffect(() => handleLoadMoreMovies("set"), []);
 
-    return (
-        <>
-            <SearchBar value={searchTextInput} onChange={handleWriting} onSearch={handleSearching} />
-            {
-                foundMovies==null
-                ? loadedMovies.map((value) => {
-                    return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
-                })
-                : foundMovies.map((value) => {
-                    return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
-                })
-            }
-            <Button variant="outlined" onClick={() => handleLoadMoreMovies("append")}>load more</Button>
-        </>
-    );
+    if (isError) {
+        return (<SomethingWentWrong onRefresh={handleRefresh} />);
+    }
+    else {
+        return (
+            <>
+                <SearchBar
+                    value={searchTextInput}
+                    onChange={handleWriting}
+                    onSearch={handleSearching}
+                    onClear={handleClearingSearchBar}
+                />
+                {
+                    foundMovies == null
+                        ? loadedMovies.map((value) => {
+                            return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
+                        })
+                        : foundMovies.map((value) => {
+                            return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
+                        })
+                }
+                {
+                    foundMovies == null &&
+                    <Button variant="outlined" onClick={() => handleLoadMoreMovies("append")}>load more</Button>
+                }
+            </>
+        );
+    }
 }

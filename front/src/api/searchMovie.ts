@@ -13,6 +13,6 @@ export async function searchMovie(query: string): Promise<Movie[]> {
         return movies;
     } catch (error) {
         console.error("Unexpected error in searchMovie().", error);
-        return []
+        throw error;
     }
 }

@@ -12,7 +12,7 @@ export default function NavigationButton({ text }: { text: Page }) {
     //     componentClass = componentClass + " active";
     // }
 
-    const handleClick = (event: any) => {  // event isnt important here
+    const handleClick = () => {  // event isnt important here
         currentPage.setPage(text);
     }
 

@@ -1,12 +1,13 @@
 import React from "react";
 import "../css/searchBar.css";
-import { Button, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 
-export default function SearchBar({ value, onChange, onSearch }:
+export default function SearchBar({ value, onChange, onSearch, onClear}:
     {
         value: string,
         onChange: React.ChangeEventHandler<HTMLInputElement>,
-        onSearch: ()=>void
+        onSearch: () => void
+        onClear: () => void
     }) {
     return (
         <>
@@ -20,11 +21,18 @@ export default function SearchBar({ value, onChange, onSearch }:
                 placeholder="Search a movie"
                 size="small"
             />
-            <Button
-                variant="outlined"
-                sx={{ margin: 1 }}
-                onClick={onSearch}
-            >Search</Button>
+            <Box>
+                <Button
+                    variant="outlined"
+                    sx={{ margin: 1 }}
+                    onClick={onSearch}
+                >Search</Button>
+                <Button
+                    variant="outlined"
+                    sx={{ margin: 1 }}
+                    onClick={onClear}
+                >Clear</Button>
+            </Box>
         </>
     );
 }
