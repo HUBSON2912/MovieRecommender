@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import SearchBar from "../components/searchBar";
 import MovieCard from "../components/movieCard";
 import { useEffect, useState } from "react";
@@ -50,7 +50,7 @@ export default function SearchPage() {
     // simple loading movies logic
     const [loadedMovies, setLoadedMovies] = useState<Movie[]>([]);
     const handleLoadMoreMovies = (mode: "set" | "append") => {
-        getMovies(loadedMovies.length)
+        getMovies(mode == "set" ? 0 : loadedMovies.length)
             .then(res => {
                 if (mode == "set")
                     setLoadedMovies(res)
@@ -84,6 +84,10 @@ export default function SearchPage() {
                         : foundMovies.map((value) => {
                             return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
                         })
+                }
+                {
+                    foundMovies != null && foundMovies.length == 0 &&
+                    <Typography component="p" sx={{ margin: 1 }}>Cannot find anything. Search for something else.</Typography>
                 }
                 {
                     foundMovies == null &&
