@@ -4,21 +4,24 @@ import MovieCard from "../components/movieCard";
 import { useEffect, useState } from "react";
 import type { Movie } from "../types";
 import { getMovies } from "../api/getMovies";
+import { searchMovie } from "../api/searchMovie";
 
 export default function SearchPage() {
     const [searchTextInput, setSearchTextInput] = useState<string>("");
+    const [foundMovies, setFoundMovies] = useState<Movie[] | null>(null);
     const handleWriting = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTextInput(event.currentTarget.value);
+        const newVal = event.currentTarget.value;
+        setSearchTextInput(newVal);
+
+        if (newVal.length == 0) {
+            setFoundMovies(null); // clear searching results
+        }
+        console.log("found:", foundMovies)
+        console.log("loaded:", loadedMovies)
     }
-    // handle searching
-    useEffect(() => {
-        // < 2 to catch movies like IT or E.T.
-        if (searchTextInput.length < 2)
-            return;
-
-    }, [searchTextInput]);
-
-
+    const handleSearching = () => {
+        searchMovie(searchTextInput).then(res => setLoadedMovies(res)).catch(err => console.error(err));
+    }
 
 
     const [rating, setRating] = useState<number | null>(null);
@@ -32,23 +35,32 @@ export default function SearchPage() {
 
 
     const [loadedMovies, setLoadedMovies] = useState<Movie[]>([]);
-    const handleLoadMoreMovies = () => {
+    const handleLoadMoreMovies = (mode: "set" | "append") => {
         getMovies(loadedMovies.length)
-            .then(res => setLoadedMovies(prev => [...prev, ...res]))
-            .catch(err=>console.error(err));
+            .then(res => {
+                if (mode == "set")
+                    setLoadedMovies(res)
+                else
+                    setLoadedMovies(prev => [...prev, ...res])
+            })
+            .catch(err => console.error(err));
     }
     // load movies on load
-    useEffect(handleLoadMoreMovies, []);
+    useEffect(() => handleLoadMoreMovies("set"), []);
 
     return (
         <>
-            <SearchBar value={searchTextInput} onChange={handleWriting} />
+            <SearchBar value={searchTextInput} onChange={handleWriting} onSearch={handleSearching} />
             {
-                loadedMovies.map((value) => {
-                    return (<MovieCard movie={value} onRate={handleRate} key={value.title} />)
+                foundMovies==null
+                ? loadedMovies.map((value) => {
+                    return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
+                })
+                : foundMovies.map((value) => {
+                    return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
                 })
             }
-            <Button variant="outlined" onClick={handleLoadMoreMovies}>load more</Button>
+            <Button variant="outlined" onClick={() => handleLoadMoreMovies("append")}>load more</Button>
         </>
     );
 }

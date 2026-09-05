@@ -33,3 +33,15 @@ def status():
 def getMovies(offset:int):
     # return movies[0]
     return JSONResponse(content = jsonable_encoder(movies[offset : offset+consts.RETURN_MOVIES]) )
+
+@app.post("/search/{query}")
+def searchMovie(query:str):
+    query=query.lower()
+    if query[0:3]=="id:": # looking for a movie with specified ID
+        searchId=int(query[3:])
+
+        foundMovie=list(filter(lambda mov: mov.id==searchId, movies)) # as list for integrity
+        return JSONResponse(content = jsonable_encoder(foundMovie))
+    else:
+        foundMovies = list(filter(lambda mov: query in mov.title.lower(), movies))
+        return JSONResponse(content = jsonable_encoder(foundMovies))
