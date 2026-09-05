@@ -2,6 +2,7 @@ from __future__ import annotations
 import json
 import typing
 import datetime
+from pydantic import BaseModel, ValidationError
 
 class Collection(typing.TypedDict):
     id:int
@@ -37,8 +38,21 @@ def strToListOfGenre(str:str)->list[str]:
     genres:Genre=json.loads(str)
     return list(map(lambda x: x["name"], genres))
 
+TRANSFORMATION_FUNCTIONS:dict[str, typing.Callable] = {
+    "adult": lambda str: str=="True",
+    "genres": strToListOfGenre,
+    "id": int,
+    "imdb_id": str,
+    "overview": str,
+    "popularity": float,
+    "poster_path": str,
+    "release_date": strToDate,
+    "title": str,
+    "vote_average": float,
+    "vote_count": int
+}
 
-class Movie(typing.TypedDict):
+class Movie(BaseModel):
     adult:bool
     genres:list[str] # just names
     id:int
@@ -51,34 +65,26 @@ class Movie(typing.TypedDict):
     vote_average:float
     vote_count:int
 
-    __transformationFunctions:dict[str, typing.Callable] = {
-        "adult": lambda str: str=="True",
-        "genres": strToListOfGenre,
-        "id": int,
-        "imdb_id": str,
-        "overview": str,
-        "popularity": float,
-        "poster_path": str,
-        "release_date": strToDate,
-        "title": str,
-        "vote_average": float,
-        "vote_count": int
-    }
-
     @staticmethod
-    def transform(dict_input: dict) -> Movie|None:
+    def transform(dict_csv: dict) -> Movie|None:
         # remove fields that are unnecessary but exist in csv
-        keyValPairs:list[str, typing.Any] = dict_input.items()
+        keyValPairs:list[str, typing.Any] = dict_csv.items()
         keyValPairs=list(filter(lambda kv: kv[0] in Movie.__annotations__.keys(), keyValPairs))
 
-        result=Movie()
-        for name, value in keyValPairs:
+        dict_correctTypes={}
+        for name,value in keyValPairs:
             try:
-                result[name]=Movie.__transformationFunctions[name](value)
+                dict_correctTypes[name]=TRANSFORMATION_FUNCTIONS[name](value)
             except:
-                # if data are not valid
-                # then skip the movie
+                # if data not valid then None
                 return None
         
-        return result
-        
+        try:
+            return Movie.model_validate(dict_correctTypes)
+        except ValidationError:
+            # missing data or wrong data
+            return None
+
+# if __name__=="__main__":
+    
+#     unittest.main()
