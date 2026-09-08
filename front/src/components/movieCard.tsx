@@ -1,10 +1,12 @@
-import type { Movie } from "../types";
+import type { Movie, RatingsContextType, Rate } from "../types";
 import "../css/movieCard.css";
 import { Box, Rating, Typography, type SxProps } from "@mui/material";
 import type { Theme } from "@emotion/react";
+import { useContext } from "react";
+import { RatingsContext } from "../App";
 
-export default function MovieCard({ movie, onRate }: { movie: Movie, onRate: (event: React.SyntheticEvent, value: number|null)=>void }) {
-
+export default function MovieCard({ movie }: { movie: Movie }) {
+    const { ratings, setRatings, delRatings } = useContext(RatingsContext)
     return (
         <Box component="section" className="cardContainer" sx={style.cardContainer} >
             <img className="movieImage" height="400" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="Cannot load the image" />
@@ -15,7 +17,7 @@ export default function MovieCard({ movie, onRate }: { movie: Movie, onRate: (ev
                     </Typography>
                     <Typography>
                         {/* just year */}
-                        ({movie.release_date.slice(0,4)}) 
+                        ({movie.release_date.slice(0, 4)})
                     </Typography>
                 </div>
                 <Typography component="p" sx={style.movieDataInfo}>
@@ -30,13 +32,20 @@ export default function MovieCard({ movie, onRate }: { movie: Movie, onRate: (ev
                     Vote: <Typography component="span" sx={{ fontSize: "18px" }} className={voteRank}>{movie.vote_average}</Typography> ({movie.vote_count} votes)
                 </Typography> */}
                 <Box sx={style.movieRating}>
-                    <Rating 
-                        name="vote" 
-                        defaultValue={movie.vote_average/2}  // movie has rating 0-10 and there are 5 stars
+                    <Rating
+                        name="vote"
+                        defaultValue={movie.vote_average / 2}  // movie has rating 0-10 and there are 5 stars
                         precision={0.1}
-                        onChange={onRate}
-                        // todo if rated then secondary
-                        // todo if rated then "clear" button
+                        onChange={(e: React.SyntheticEvent, value: number | null) => {
+                            if (value)
+                                setRatings({ movieId: movie.id, rate: value });
+                            else
+                                delRatings(movie.id);
+                            console.log(ratings)
+                        }}
+                        color="red"
+                    // todo if rated then secondary
+                    // todo if rated then "clear" button
                     />
                     <Typography sx={style.movieDataInfo}>
                         ({movie.vote_count} votes)
@@ -72,7 +81,7 @@ const style: Record<string, SxProps<Theme>> = {
         marginTop: "15px"
     },
     movieRating: {
-        display:"flex",
+        display: "flex",
         flexDirection: "row",
         alignItems: "center",
         gap: "15px"

@@ -2,11 +2,15 @@ import React from "react";
 import "../css/searchBar.css";
 import { Box, Button, TextField } from "@mui/material";
 
-function isAlphanumeric(input:string):boolean {
-    return Boolean(input.match(/^[0-9a-zA-Z ]*$/gm))
+function isAlphanumeric(input: string): boolean {
+    return Boolean(input.match(/^[0-9a-zA-Z ]*$/gm));
 }
 
-export default function SearchBar({ value, onChange, onSearch, onClear}:
+function isIDSearch(input: string): boolean {  // you can search directly id
+    return Boolean(input.match(/^id\:[0-9]+$/gm));
+}
+
+export default function SearchBar({ value, onChange, onSearch, onClear }:
     {
         value: string,
         onChange: React.ChangeEventHandler<HTMLInputElement>,
@@ -30,7 +34,7 @@ export default function SearchBar({ value, onChange, onSearch, onClear}:
                     variant="outlined"
                     sx={{ margin: 1 }}
                     onClick={onSearch}
-                    disabled={value=="" || !isAlphanumeric(value)}
+                    disabled={value == "" || (!isAlphanumeric(value) && !isIDSearch(value))}
                 >Search</Button>
                 <Button
                     variant="outlined"

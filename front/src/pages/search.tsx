@@ -13,7 +13,6 @@ export default function SearchPage() {
     const handleRefresh = () => {
         setSearchTextInput("");
         setFoundMovies(null);
-        setRating(null);
         setLoadedMovies([]);
         setIsError(false);
 
@@ -36,15 +35,6 @@ export default function SearchPage() {
     const handleClearingSearchBar = () => {
         setSearchTextInput("");
         setFoundMovies(null);
-    }
-
-    // rating logic
-    const [rating, setRating] = useState<number | null>(null);
-    const handleRate = (event: React.SyntheticEvent, value: number | null) => {
-        console.log(value);
-        setRating(value);
-        // todo change value type to {id: int, value:int|null}
-        // todo save in file or localstorage
     }
 
     // simple loading movies logic
@@ -79,10 +69,10 @@ export default function SearchPage() {
                 {
                     foundMovies == null
                         ? loadedMovies.map((value) => {
-                            return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
+                            return (<MovieCard movie={value} key={`${value.title}-${value.id}`} />)
                         })
                         : foundMovies.map((value) => {
-                            return (<MovieCard movie={value} onRate={handleRate} key={`${value.title}-${value.id}`} />)
+                            return (<MovieCard movie={value} key={`${value.title}-${value.id}`} />)
                         })
                 }
                 {
