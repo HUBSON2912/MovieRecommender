@@ -10,7 +10,6 @@ export async function getMovies(offset:number=0) : Promise<Movie[]> {
         }
 
         const movies:Movie[]=await servResponse.json();
-        console.log("przyszło:", movies);
         return movies;
     }
     catch(error) {

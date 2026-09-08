@@ -7,11 +7,13 @@ export type Rate = { movieId: number, rate: number };
  * @param {Rate[]} ratings - array of all ratings 
  * @param {Function} setRatings - override existing rate or add a new one
  * @param {Function} delRatings - delete rate with given movieId
+ * @param {Function} getRate - return the rate of the movie with given id
  */
 export type RatingsContextType = { 
     ratings: Rate[], 
     setRatings: (r: Rate) => void,
-    delRatings: (id:number)=>void
+    delRatings: (id:number)=>void,
+    getRate:(id:number)=>number|undefined
 };
 
 export type Movie = {

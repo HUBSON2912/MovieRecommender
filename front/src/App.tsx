@@ -9,7 +9,7 @@ import SearchPage from "./pages/search";
 
 
 export const CurrentPageContext = createContext<PageContextType>({ page: "search", setPage: () => { } });
-export const RatingsContext = createContext<RatingsContextType>({ ratings: [], setRatings: () => { }, delRatings: () => { } })
+export const RatingsContext = createContext<RatingsContextType>({ ratings: [], setRatings: () => { }, delRatings: () => { }, getRate:()=>{} })
 
 function App() {
     const [currentPage, setCurrentPage] = useState<Page>("search");
@@ -37,10 +37,16 @@ function App() {
         }
         console.info("Nothing deleted");
     }
+    const handleGetRate=(mId:number):number|undefined => {
+        const foundRate=ratings.find(r=>r.movieId==mId);
+        if(foundRate)
+            return foundRate.rate;
+        return undefined;
+    }
 
     return (
         <CurrentPageContext value={{ page: currentPage, setPage: setCurrentPage }}>
-            <RatingsContext value={{ ratings: ratings, setRatings: handleSetRatings, delRatings: handleDelRatings }}>
+            <RatingsContext value={{ ratings: ratings, setRatings: handleSetRatings, delRatings: handleDelRatings, getRate:handleGetRate }}>
                 <Box sx={styles.container}>
                     <Header />
                     <main>
