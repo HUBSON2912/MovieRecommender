@@ -1,10 +1,11 @@
-import type { Movie, Rate } from "../types";
+import type { Movie } from "../types";
 import "../css/movieCard.css";
-import { Box, Button, Rating, Typography, type SxProps } from "@mui/material";
+import { Box, IconButton, Rating, Typography, type SxProps } from "@mui/material";
 import type { Theme } from "@emotion/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { RatingsContext } from "../App";
 import { Star } from "@mui/icons-material";
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function MovieCard({ movie }: { movie: Movie }) {
     const { ratings, setRatings, delRatings, getRate } = useContext(RatingsContext);
@@ -12,6 +13,8 @@ export default function MovieCard({ movie }: { movie: Movie }) {
         // console.log(Boolean(getRate(movie.id)));
         return Boolean(getRate(movie.id));
     }
+
+
 
     return (
         <Box component="section" className="cardContainer" sx={style.cardContainer} >
@@ -40,23 +43,18 @@ export default function MovieCard({ movie }: { movie: Movie }) {
                 <Box sx={style.movieRating}>
                     <Rating
                         name="vote"
-                        defaultValue={isRated() ? getRate(movie.id) : movie.vote_average / 2}  // movie has rating 0-10 and there are 5 stars
+                        value={isRated() ? getRate(movie.id) : movie.vote_average / 2}  // movie has rating 0-10 and there are 5 stars
                         precision={0.1}
                         onChange={(e: React.SyntheticEvent, value: number | null) => {
                             if (value)
                                 setRatings({ movieId: movie.id, rate: value });
                             else
                                 delRatings(movie.id);
-                            console.log(ratings)
+                            console.log(ratings);
                         }}
-
-                    // todo if rated then secondary
-                    // todo if rated then "clear" button
+                        icon={isRated() ? <Star color="secondary" /> : <Star color="inherit" />}
                     />
-                    {
-                        isRated() &&
-                        <Button>Clear</Button>
-                    }
+                    {isRated() && <IconButton size="small"  onClick={()=>delRatings(movie.id)}><ClearIcon /></IconButton>}
                     <Typography sx={style.movieDataInfo}>
                         ({movie.vote_count} votes)
                     </Typography>
