@@ -34,6 +34,11 @@ def getMovies(offset:int):
     # return movies[0]
     return JSONResponse(content = jsonable_encoder(movies[offset : offset+consts.RETURN_MOVIES]) )
 
+@app.post("/get/ids")
+def getMoviesWithID(ids: list[int]):
+    foundMovies=list(filter(lambda movie: movie.id in ids, movies))
+    return JSONResponse(content=jsonable_encoder(foundMovies))
+
 @app.post("/search/{query}")
 def searchMovie(query:str):
     query=query.lower()

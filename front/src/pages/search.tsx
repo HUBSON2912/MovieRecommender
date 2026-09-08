@@ -3,7 +3,7 @@ import SearchBar from "../components/searchBar";
 import MovieCard from "../components/movieCard";
 import { useEffect, useState } from "react";
 import type { Movie } from "../types";
-import { getMovies } from "../api/getMovies";
+import { getBatchOfMovies } from "../api/getMovies";
 import { searchMovie } from "../api/searchMovie";
 import SomethingWentWrong from "../components/sthWentWrong";
 
@@ -40,7 +40,7 @@ export default function SearchPage() {
     // simple loading movies logic
     const [loadedMovies, setLoadedMovies] = useState<Movie[]>([]);
     const handleLoadMoreMovies = (mode: "set" | "append") => {
-        getMovies(mode == "set" ? 0 : loadedMovies.length)
+        getBatchOfMovies(mode == "set" ? 0 : loadedMovies.length)
             .then(res => {
                 if (mode == "set")
                     setLoadedMovies(res)

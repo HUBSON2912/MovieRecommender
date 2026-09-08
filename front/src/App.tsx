@@ -6,6 +6,8 @@ import { Box } from "@mui/material";
 import type { SxProps } from "@mui/material/styles";
 import type { Theme } from "@mui/material/styles";
 import SearchPage from "./pages/search";
+import RatedPage from "./pages/rated";
+import { getSavedRatings, saveRatings } from "./api/localstorage";
 
 
 export const CurrentPageContext = createContext<PageContextType>({ page: "search", setPage: () => { } });
@@ -21,11 +23,12 @@ function App() {
             if (editBuffer[i].movieId == r.movieId) {
                 editBuffer[i].rate = r.rate;
                 setRatings([...editBuffer]);
+                saveRatings(editBuffer)
                 return;
             }
         }
         setRatings([...editBuffer, r]);
-        localStorage.setItem("ratings", JSON.stringify([...editBuffer, r]));
+        saveRatings([...editBuffer, r])
     }
     const handleDelRatings = (mId: number) => {
         let editBuffer: Rate[] = ratings;
@@ -33,7 +36,7 @@ function App() {
             if (editBuffer[i].movieId == mId) {
                 editBuffer.splice(i, 1);  // delete one element
                 setRatings([...editBuffer]);
-                localStorage.setItem("ratings",JSON.stringify([...editBuffer]));
+                saveRatings(editBuffer);
                 return;
             }
         }
@@ -45,13 +48,10 @@ function App() {
             return foundRate.rate;
         return undefined;
     }
+
     // load ratings from localstorage
     useEffect(() => {
-        let savedRatings = localStorage.getItem("ratings");
-        if (!savedRatings)
-            savedRatings = JSON.stringify([]);
-
-        setRatings(JSON.parse(savedRatings));
+        setRatings(getSavedRatings())
     }, []);
 
     return (
@@ -60,7 +60,8 @@ function App() {
                 <Box sx={styles.container}>
                     <Header />
                     <main>
-                        <SearchPage />
+                        {currentPage == "search" && <SearchPage />}
+                        {currentPage == "rated" && <RatedPage />}
                     </main>
                 </Box>
             </RatingsContext>
