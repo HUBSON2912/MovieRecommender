@@ -9,17 +9,20 @@ export default function RatedPage() {
 
     const [savedRatings, setSavedRatings] = useState<Rate[]>([]);
     const [ratedMovies, setRatedMovies] = useState<Movie[]>([])
+    // read ratings
+    useEffect(() => {
+        setSavedRatings(getSavedRatings())
+    }, []);
+    // get movies when ratings are ready
     useEffect(() => {
         getMoviesByID(
-                getSavedRatings().map((rate: Rate) => rate.movieId)
-            ).then(res=>setRatedMovies(res))
-            .catch(()=>setIsError(true));
-        // console.log(savedRatings, ratedMovies);
-    }, [])
+            savedRatings.map((rate: Rate) => rate.movieId)
+        ).then(res => setRatedMovies(res))
+            .catch(() => setIsError(true));
+    }, [savedRatings]);
 
     return (
         <>
-        <p>{JSON.stringify(ratedMovies)}</p>
             {
                 ratedMovies.map((value) => {
                     return (<MovieCard movie={value} key={`${value.title}-${value.id}`} />)

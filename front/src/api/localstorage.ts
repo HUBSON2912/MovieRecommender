@@ -2,17 +2,14 @@ import type { Rate } from "../types";
 
 export function getSavedRatings(): Rate[] {
     // todo tu jakieś problemy z typami
-    let savedRatings: = localStorage.getItem("ratings");
-    if (!savedRatings) {
+    let rawLocalStItem = localStorage.getItem("ratings");
+    if (!rawLocalStItem) {
         return [];
     }
     else {
-        savedRatings = JSON.parse(savedRatings);
-        if(!savedRatings)
-            return [];
-        return savedRatings.map((r: Rate) => r.movieId);
+        return JSON.parse(rawLocalStItem);
     }
-    
+
 }
 
 export function saveRatings(ratings: Rate[]) {
