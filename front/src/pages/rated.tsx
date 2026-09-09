@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import type { Movie, Rate } from "../types";
 import { getSavedRatings } from "../api/localstorage";
 import MovieCard from "../components/movieCard";
-import { getMoviesByID } from "../api/getMovies";
+import { getMoviesByID } from "../api/movies";
 
 export default function RatedPage() {
     const [isError, setIsError] = useState<boolean>(false);
-
+    // todo error handling
     const [savedRatings, setSavedRatings] = useState<Rate[]>([]);
     const [ratedMovies, setRatedMovies] = useState<Movie[]>([])
     // read ratings

@@ -3,8 +3,7 @@ import SearchBar from "../components/searchBar";
 import MovieCard from "../components/movieCard";
 import { useEffect, useState } from "react";
 import type { Movie } from "../types";
-import { getBatchOfMovies } from "../api/getMovies";
-import { searchMovie } from "../api/searchMovie";
+import { getBatchOfMovies, searchMovie } from "../api/movies";
 import SomethingWentWrong from "../components/sthWentWrong";
 
 export default function SearchPage() {

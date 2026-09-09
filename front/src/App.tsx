@@ -9,6 +9,7 @@ import SearchPage from "./pages/search";
 import RatedPage from "./pages/rated";
 import { getSavedRatings, saveRatings } from "./api/localstorage";
 import AboutPage from "./pages/about";
+import RecommendationsPage from "./pages/recommendations";
 
 
 export const CurrentPageContext = createContext<PageContextType>({ page: "search", setPage: () => { } });
@@ -63,6 +64,7 @@ function App() {
                     <main>
                         {currentPage == "search" && <SearchPage />}
                         {currentPage == "rated" && <RatedPage />}
+                        {currentPage == "recommendations" && <RecommendationsPage />}
                         {currentPage == "about" && <AboutPage />}
                     </main>
                 </Box>
