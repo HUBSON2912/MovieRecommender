@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import copy
 import datetime
 import consts
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -100,6 +101,9 @@ class Funk:
 
     def save(self, name:Optional[str]=None):
         savePath:Path=consts.SAVE_DIR
+        if not savePath.exists():
+            os.mkdir(savePath)
+        
         if not (name is None):
             savePath=savePath / f"{name}.bin"
         else:

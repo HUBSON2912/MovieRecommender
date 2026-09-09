@@ -221,6 +221,9 @@ __marimo__/
 back/data/*.csv
 back/data/*.zip
 
+# trained models
+back/saved
+
 # React & Vite stuff
 # Logs
 logs
