@@ -16,7 +16,7 @@ export const CurrentPageContext = createContext<PageContextType>({ page: "search
 export const RatingsContext = createContext<RatingsContextType>({ ratings: [], setRatings: () => { }, delRatings: () => { }, getRate: () => { } })
 
 function App() {
-    const [currentPage, setCurrentPage] = useState<Page>("search");
+    const [currentPage, setCurrentPage] = useState<Page>("recommendations");
     const [ratings, setRatings] = useState<Rate[]>([]);
     const handleSetRatings = (r: Rate) => {
         let editBuffer: Rate[] = ratings;
