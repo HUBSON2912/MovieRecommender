@@ -78,6 +78,12 @@ class Funk:
 
     def predict(self, user:int, item:int) -> float:
         return np.dot(self.__P[user], self.__Q.transpose()[item])
+    
+    def predictForUser(self, user:int) -> list[tuple[int,float]]:
+        predictions:list[tuple[int,float]]=[]  # [(movieId, pred_rate)]
+        for i in range(self.nitems):
+            predictions.append((i, self.predict(user, i)))
+        return predictions
 
     def printPredictions(self):
         # error graph

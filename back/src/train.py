@@ -31,7 +31,7 @@ def getNumUsersItems(ratings: dict[tuple[int,int], float]) -> tuple[int,int]:
         inum=max(inum, i)
     return unum, inum
 
-if __name__=="__main__":
+def trainModel():
     if not areDataComplete():
         raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
 

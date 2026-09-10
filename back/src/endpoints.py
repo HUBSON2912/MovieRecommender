@@ -1,6 +1,7 @@
 import consts
 import os
-import re
+import funk_model
+import train
 from misc import hasBinExtentnion
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -98,3 +99,24 @@ def getListOfSavedModels()->list[str]:
     fileNames:list[str]=os.listdir(consts.SAVE_DIR)
     fileNames=list(filter(hasBinExtentnion, fileNames))
     return JSONResponse(content=jsonable_encoder(fileNames))
+
+@app.post("/models/recommend/{fileName}")
+def getRecommendations(fileName:str)->list[Movie]:  # todo jakoś że film, oceny i przewidywana ocena
+    model=funk_model.Funk.load(consts.SAVE_DIR / fileName)
+    user=consts.REAL_USER_ID  # it's aimed for one user
+    predictions=model.predictForUser(user)
+    predictions=list(filter(lambda x: x[1]>=consts.RECOMMENDATION_RATE_THRESHOLD,predictions))
+
+    # todo test it if i can change the values simply
+    predictedMovies=getMoviesWithID(list(map(lambda x: x[0], predictions)))
+    print(type(predictedMovies))
+    print(type(predictedMovies[0]))
+    return predictedMovies
+
+@app.put("/models/retrain")
+def retrainModel():
+    train.trainModel()
+
+
+if __name__=="__main__":
+    print(getRecommendations("funk-model-2026-9-10T11:48:6.bin"))

@@ -18,3 +18,5 @@ SECOND_DIMENTIONS=150
 
 # endpoints consts
 RETURN_MOVIES = 15  # how many movies you return at once
+REAL_USER_ID=0
+RECOMMENDATION_RATE_THRESHOLD=4.5

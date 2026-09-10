@@ -15,6 +15,7 @@ export default function AboutPage() {
                     <Typography component="li">Apache virtual hosts and reverse proxy</Typography>
                     <Typography component="li">TypeScript</Typography>
                     <Typography component="li">React</Typography>
+                    <Typography component="li">unittest in Python</Typography>
                 </ul>
             </Typography>
         </Box>
