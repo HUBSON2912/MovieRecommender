@@ -15,6 +15,7 @@ class Funk:
         self.nitems:int = nitems
         self.secdim:int = secdim
         self.learning_rate:float=learn_rate
+        self.trainData={}
 
         self.__regulationParam:float=regulation_param
         self.__initialLearningRate:float=learn_rate

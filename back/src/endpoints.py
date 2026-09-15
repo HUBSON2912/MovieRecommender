@@ -30,8 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-movies=readMovies()
-moviesIDs=list(map(lambda movie: movie.id, movies))
+movies, ids_map=readMovies()
 
 @app.get("/")
 def status()->object:
@@ -114,7 +113,7 @@ def getRecommendations(fileName:str)->list[Movie]:  # todo jakoś że film, ocen
     for pred in predictions:
         if len(bestMoviesIds)>=consts.RETURN_MOVIES:
             break
-        if pred[0] in moviesIDs:
+        if pred[0] in ids_map.values():
             bestMoviesIds.append(pred[0])
 
     return getMoviesWithID(bestMoviesIds)

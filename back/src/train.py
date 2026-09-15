@@ -1,29 +1,10 @@
 import csv
 import os
+import pathlib
 import consts
 import funk_model
 import custom_types
-
-def areDataComplete() -> bool:
-    filesInData:list[str] = os.listdir(consts.DATA_DIR)
-    for file in consts.REQURED_DATA:
-        if not (file in filesInData):
-            return False
-    return True
-
-def readRatings() -> dict[tuple[int,int], float]: 
-    res:dict[tuple[int,int], float] = dict()
-    with open(consts.RATINGS) as file:
-        reader=list(csv.reader(file))
-        headers=reader[0]
-        reader=reader[1:]
-        for userId,movieId,rating,_ in reader:
-            userId,movieId,rating = int(userId),int(movieId),float(rating)
-            # if movieId>15000:
-            #     continue
-            res[(userId, movieId)] = rating
-
-    return res
+import handledata
 
 def getNumUsersItems(ratings: dict[tuple[int,int], float]) -> tuple[int,int]:
     unum, inum=0,0
@@ -32,11 +13,11 @@ def getNumUsersItems(ratings: dict[tuple[int,int], float]) -> tuple[int,int]:
         inum=max(inum, i)
     return unum, inum
 
-def trainModel(userRatings:list[custom_types.Rate]=[])->str:
-    if not areDataComplete():
+def trainModel(userRatings:list[custom_types.Rate]=[], map_of_ids:dict[int, int]|None=None)->str:
+    if not handledata.areDataComplete():
         raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
 
-    real_ratings:dict[tuple[int,int], float] = readRatings()
+    real_ratings:dict[tuple[int,int], float] = handledata.readRatings(map_of_ids)
 
     if len(userRatings)!=0:
         for rate in userRatings:
@@ -50,4 +31,11 @@ def trainModel(userRatings:list[custom_types.Rate]=[])->str:
     model.train(real_ratings, max_iterations=5)
     return model.save().name
     
+    # model.printPredictions()
+
+if __name__=="__main__":
+    movies,ids=handledata.readMovies()
+    name=trainModel(map_of_ids=ids)
+    model=funk_model.Funk.getDummy()
+    model.load(pathlib.Path(consts.SAVE_DIR/name))
     # model.printPredictions()
