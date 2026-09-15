@@ -18,7 +18,7 @@ export default function RecommendationsPage() {
         <Box sx={styles.selectModelContainer}>
             <SelectList items={modelNames} onClickItem={setSelectedModel} selected={selectedModel} title="Select model" />
             <Box sx={styles.buttonPanel}>
-                <Button variant="outlined" disabled={selectedModel==null}>Run</Button>
+                <Button variant="outlined" disabled={selectedModel==null} onClick={()=>{}}>Run</Button>
                 <Button variant="outlined" onClick={()=>retrainNewModel()}>Retrain new</Button>
             </Box>
         </Box>

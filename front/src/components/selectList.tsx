@@ -20,8 +20,8 @@ export default function SelectList({ items, onClickItem, maxHeight = 200, title 
             <List
                 subheader={title ? <ListSubheader component="div">{title}</ListSubheader> : <></>}
             >
-                {items.map((value) =>
-                    <ListElement label={value} onClick={onClickItem} selected={value == selected} />
+                {items.map((value, index) =>
+                    <ListElement label={value} onClick={onClickItem} selected={value == selected} key={`list-element-${value}-${index}`}/>
                 )}
             </List>
         </Paper>

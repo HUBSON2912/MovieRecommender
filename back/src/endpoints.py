@@ -1,3 +1,4 @@
+import json
 import consts
 import os
 import funk_model
@@ -30,6 +31,7 @@ app.add_middleware(
 )
 
 movies=readMovies()
+moviesIDs=list(map(lambda movie: movie.id, movies))
 
 @app.get("/")
 def status()->object:
@@ -107,13 +109,18 @@ def getRecommendations(fileName:str)->list[Movie]:  # todo jakoś że film, ocen
     user=consts.REAL_USER_ID  # it's aimed for one user
     predictions=model.predictForUser(user)
     predictions.sort(key=lambda x: x[1], reverse=True)
-    bestMoviesIdRate=predictions[:consts.RETURN_MOVIES]
 
-    # todo test it if i can change the values simply
-    return getMoviesWithID(list(map(lambda x: x[0], bestMoviesIdRate)))
+    bestMoviesIds:list[int]=[]
+    for pred in predictions:
+        if len(bestMoviesIds)>=consts.RETURN_MOVIES:
+            break
+        if pred[0] in moviesIDs:
+            bestMoviesIds.append(pred[0])
+
+    return getMoviesWithID(bestMoviesIds)
 
 @app.post("/models/retrain")
-async def retrainModel(ratings:list[custom_types.Rate]):
+def retrainModel(ratings:list[custom_types.Rate]):
     userRatings=jsonable_encoder(ratings)
     train.trainModel(userRatings)
     return JSONResponse(content=jsonable_encoder("finish"))
@@ -121,4 +128,5 @@ async def retrainModel(ratings:list[custom_types.Rate]):
 
 
 if __name__=="__main__":
-    print(getRecommendations("funk-model-2026-9-10T15:3:15.bin"))
+    recom = json.loads(getRecommendations("z-superbohaterami.bin").body)
+    print(recom)

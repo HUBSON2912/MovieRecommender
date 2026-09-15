@@ -9,6 +9,7 @@ export default function AboutPage() {
             </Typography>
             <Typography component="p">
                 Working on the project I learn something about:
+            </Typography>
                 <ul>
                     <Typography component="li">Funk SVD</Typography>
                     <Typography component="li">FastAPI</Typography>
@@ -17,7 +18,6 @@ export default function AboutPage() {
                     <Typography component="li">React</Typography>
                     <Typography component="li">unittest in Python</Typography>
                 </ul>
-            </Typography>
         </Box>
     );
 }
