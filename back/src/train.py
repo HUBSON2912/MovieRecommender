@@ -2,6 +2,7 @@ import csv
 import os
 import consts
 import funk_model
+import custom_types
 
 def areDataComplete() -> bool:
     filesInData:list[str] = os.listdir(consts.DATA_DIR)
@@ -31,11 +32,15 @@ def getNumUsersItems(ratings: dict[tuple[int,int], float]) -> tuple[int,int]:
         inum=max(inum, i)
     return unum, inum
 
-def trainModel():
+def trainModel(userRatings:list[custom_types.Rate]=[])->str:
     if not areDataComplete():
         raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
 
     real_ratings:dict[tuple[int,int], float] = readRatings()
+
+    if len(userRatings)!=0:
+        for rate in userRatings:
+            real_ratings[(consts.REAL_USER_ID, rate["movieId"])]=rate["rate"]
 
     num_users:int = 0
     num_movies:int = 0
@@ -43,6 +48,6 @@ def trainModel():
     
     model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 0.01, 0.001, 0.001)  # +1 because the user is the 0th and ids are counted from 1
     model.train(real_ratings, max_iterations=5)
-    model.save()
+    return model.save().name
     
-    model.printPredictions()
+    # model.printPredictions()

@@ -85,6 +85,7 @@ class Movie(BaseModel):
             # missing data or wrong data
             return None
 
-# if __name__=="__main__":
-    
-#     unittest.main()
+
+class Rate(BaseModel):
+    movieId:int
+    rate:float

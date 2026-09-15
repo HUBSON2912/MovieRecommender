@@ -1,7 +1,6 @@
 import type { Rate } from "../types";
 
 export function getSavedRatings(): Rate[] {
-    // todo tu jakieś problemy z typami
     let rawLocalStItem = localStorage.getItem("ratings");
     if (!rawLocalStItem) {
         return [];

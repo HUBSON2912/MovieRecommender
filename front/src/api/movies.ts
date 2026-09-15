@@ -2,7 +2,7 @@ import { ENDPOINT } from "../consts";
 import type { Movie } from "../types";
 
 export async function getBatchOfMovies(offset: number = 0): Promise<Movie[]> {
-    const URL = ENDPOINT + `/movies/${offset}`;
+    const URL = ENDPOINT + `/movies/batch/${offset}`;
     try {
         const servResponse = await fetch(URL, { method: "POST" });
         if (!servResponse.ok) {
@@ -23,11 +23,10 @@ export async function getMoviesByID(ids: number[]): Promise<Movie[]> {
     try {
         const servResponse = await fetch(URL, {
             method: "POST",
+            body: JSON.stringify(ids),
             headers: {
-                "Accept": "application/json",
                 "Content-Type": "application/json"
-            },
-            body: JSON.stringify(ids)
+            }
         });
         if (!servResponse.ok) {
             throw new Error(`Response status ${servResponse.status}`);

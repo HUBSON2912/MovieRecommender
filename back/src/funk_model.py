@@ -105,7 +105,7 @@ class Funk:
             R=self.trainData[(u,i)]
             print(f"{(u,i)}:\tR={R}\tR'={Rp}\tdR={Rp-R}")
 
-    def save(self, name:Optional[str]=None):
+    def save(self, name:Optional[str]=None)->Path:
         savePath:Path=consts.SAVE_DIR
         if not savePath.exists():
             os.mkdir(savePath)
@@ -118,6 +118,8 @@ class Funk:
 
         with open(savePath, "wb") as saveFile:
             pickle.dump(self.__dict__, saveFile)
+
+        return savePath
 
     @staticmethod
     def load(path:Path) -> Funk:

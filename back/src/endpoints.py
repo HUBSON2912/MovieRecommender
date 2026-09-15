@@ -2,6 +2,7 @@ import consts
 import os
 import funk_model
 import train
+import custom_types
 from misc import hasBinExtentnion
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -39,7 +40,7 @@ def status()->object:
     """
     return {"status": "running"}
 
-@app.post("/movies/{offset}")
+@app.post("/movies/batch/{offset}")
 def getMovies(offset:int)->list[Movie]:
     """Load a batch of movies, beginning from given parameter.
 
@@ -105,18 +106,19 @@ def getRecommendations(fileName:str)->list[Movie]:  # todo jakoś że film, ocen
     model=funk_model.Funk.load(consts.SAVE_DIR / fileName)
     user=consts.REAL_USER_ID  # it's aimed for one user
     predictions=model.predictForUser(user)
-    predictions=list(filter(lambda x: x[1]>=consts.RECOMMENDATION_RATE_THRESHOLD,predictions))
+    predictions.sort(key=lambda x: x[1], reverse=True)
+    bestMoviesIdRate=predictions[:consts.RETURN_MOVIES]
 
     # todo test it if i can change the values simply
-    predictedMovies=getMoviesWithID(list(map(lambda x: x[0], predictions)))
-    print(type(predictedMovies))
-    print(type(predictedMovies[0]))
-    return predictedMovies
+    return getMoviesWithID(list(map(lambda x: x[0], bestMoviesIdRate)))
 
-@app.put("/models/retrain")
-def retrainModel():
-    train.trainModel()
+@app.post("/models/retrain")
+async def retrainModel(ratings:list[custom_types.Rate]):
+    userRatings=jsonable_encoder(ratings)
+    train.trainModel(userRatings)
+    return JSONResponse(content=jsonable_encoder("finish"))
+    
 
 
 if __name__=="__main__":
-    print(getRecommendations("funk-model-2026-9-10T11:48:6.bin"))
+    print(getRecommendations("funk-model-2026-9-10T15:3:15.bin"))
