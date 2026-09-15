@@ -15,6 +15,7 @@ REQURED_DATA:list[str]=[MOVIES.name, RATINGS.name, LINKS.name, KEYWORDS.name, CR
 
 # ai model consts
 SECOND_DIMENTIONS=150
+ITERATIONS=100
 
 # endpoints consts
 RETURN_MOVIES = 15  # how many movies you return at once
