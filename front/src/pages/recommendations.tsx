@@ -72,8 +72,8 @@ export default function RecommendationsPage() {
     return (
         <>
             <Box sx={styles.containerHeadText}>
-                <Typography component="p">Select model that best fits to you and press RUN button. If you want to create a new model you must have at least {MINIMAL_MOVIES_RATED_FOR_MODEL} movies rated. Training a new model takes a while.</Typography>
-                {message && <Typography>{message}</Typography>}
+                <Typography component="p" sx={{textAlign: "center"}}>Select model fits best to you and press RUN button. If you want to create a new model you must have at least {MINIMAL_MOVIES_RATED_FOR_MODEL} movies rated. Training a new model takes a while.</Typography>
+                {message && <Typography sx={{textAlign: "center", justifyContent: "center"}}>{message}</Typography>}
             </Box>
             <Box sx={styles.selectModelContainer}>
                 <SelectList items={modelNames} onClickItem={setSelectedModel} selected={selectedModel} title={modelNames.length == 0 ? "No saved models" : "Select model"} />
