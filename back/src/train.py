@@ -11,7 +11,7 @@ def getNumUsersItems(ratings: dict[tuple[int,int], float]) -> tuple[int,int]:
         inum=max(inum, i)
     return unum, inum
 
-def trainModel(userRatings:list[custom_types.Rate]=[], map_of_ids:dict[int, int]|None=None)->str:
+def trainModel(userRatings:list[custom_types.Rate]=[], map_of_ids:dict[int, int]|None=None, show_logs:bool=False)->str:
     if not handledata.areDataComplete():
         raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
 
@@ -26,7 +26,7 @@ def trainModel(userRatings:list[custom_types.Rate]=[], map_of_ids:dict[int, int]
     num_users, num_movies=getNumUsersItems(real_ratings)
     
     model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 0.01, 0.001, 0.001)  # +1 because the user is the 0th and ids are counted from 1
-    model.train(real_ratings, max_iterations=consts.ITERATIONS)
+    model.train(real_ratings, max_iterations=consts.ITERATIONS, show_logs=show_logs)
     
     return model.save().name
     

@@ -40,7 +40,7 @@ class Funk:
         
         return sum/len(keys)
 
-    def __updateMatrix(self, iternum:int=0):
+    def __updateMatrix(self, iternum:int|None=None):
         _counterPercent:int=0
         _keys=self.trainData.keys()
 
@@ -60,21 +60,24 @@ class Funk:
 
             # progress info
             # every 10%
-            if int(10*(_counterPercent-1)/len(_keys)) != int(10*_counterPercent/len(_keys)):
-                print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
+            if not (iternum is None):
+                if int(10*(_counterPercent-1)/len(_keys)) != int(10*_counterPercent/len(_keys)):
+                    print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
 
-    def train(self, ratings:dict[tuple[int,int], float], max_iterations:int=100, error_tolerance:float=1e-3):
+    def train(self, ratings:dict[tuple[int,int], float], max_iterations:int=100, error_tolerance:float=1e-3, show_logs:bool=False):
         self.trainData=ratings
         for i in range(max_iterations):
-            self.__updateMatrix(i+1)
+            self.__updateMatrix(i+1 if show_logs else None)
             error = self.lossFunction()
 
             self.learning_rate = self.__initialLearningRate/(1+i*self.__learningRateDecay)
             self.__errors.append(error)
 
-            print(f"===========================\nIteration {i+1} finished\nError = {error}\n===========================")
+            if show_logs:
+                print(f"===========================\nIteration {i+1} finished\nError = {error}\n===========================")
             if error<error_tolerance:
-                print("Error tolerance reached")
+                if show_logs:
+                    print("Error tolerance reached")
                 break
 
     def predict(self, user:int, item:int) -> float:

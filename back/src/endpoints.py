@@ -140,7 +140,7 @@ async def retrainModel(ratings:list[custom_types.Rate], background_tasks: Backgr
 @app.post("/models/trainStatus")
 def trainingStatus()->JSONResponse:
     if currently_training:
-        return JSONResponse(content=jsonable_encoder({"status": "training"}))
+        return JSONResponse(content=jsonable_encoder({"status": "running"}))
     return JSONResponse(content=jsonable_encoder({"status": "free"}))
 
 if __name__=="__main__":
