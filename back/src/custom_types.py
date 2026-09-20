@@ -35,7 +35,7 @@ def strToDate(str:str)->datetime.date|None:
 
 def strToListOfGenre(str:str)->list[str]:
     str=str.replace("'", "\"")
-    genres:Genre=json.loads(str)
+    genres:list[Genre]=json.loads(str)
     return list(map(lambda x: x["name"], genres))
 
 TRANSFORMATION_FUNCTIONS:dict[str, typing.Callable] = {
@@ -68,7 +68,7 @@ class Movie(BaseModel):
     @staticmethod
     def transform(dict_csv: dict) -> Movie|None:
         # remove fields that are unnecessary but exist in csv
-        keyValPairs:list[str, typing.Any] = dict_csv.items()
+        keyValPairs= dict_csv.items()
         keyValPairs=list(filter(lambda kv: kv[0] in Movie.__annotations__.keys(), keyValPairs))
 
         dict_correctTypes={}

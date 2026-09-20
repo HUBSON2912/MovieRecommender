@@ -21,8 +21,8 @@ class Funk:
         self.__initialLearningRate:float=learn_rate
         self.__learningRateDecay=learn_rate_decay
 
-        self.__P:np.ndarray[np.ndarray[float]] = np.random.rand(nusers,secdim)
-        self.__Q:np.ndarray[np.ndarray[float]] = np.random.rand(secdim,nitems)
+        self.__P = np.random.rand(nusers,secdim) # nusers x secdim
+        self.__Q = np.random.rand(secdim,nitems) # secdim x nitems
         self.__errors:list[float]=[]
 
     @staticmethod
@@ -34,7 +34,7 @@ class Funk:
    
     def lossFunction(self):
         sum=0
-        keys:list[tuple[int,int]]=self.trainData.keys()
+        keys=self.trainData.keys()
         for key in keys:
             sum+=self.__predictionError(key[0],key[1])**2
         

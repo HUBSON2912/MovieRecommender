@@ -2,7 +2,7 @@ import unittest
 import datetime
 from custom_types import Movie
 
-class MovieTransformTester(unittest.TestCase):
+class MovieTransformMethodTester(unittest.TestCase):
     def test_all_data_are_valid(self):
         in_dict={
             'adult': 'False', 

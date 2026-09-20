@@ -42,7 +42,7 @@ def status()->object:
     return {"status": "running"}
 
 @app.post("/movies/batch/{offset}")
-def getMovies(offset:int)->list[Movie]:
+def getMovies(offset:int)->JSONResponse:
     """Load a batch of movies, beginning from given parameter.
 
     Args:
@@ -55,7 +55,7 @@ def getMovies(offset:int)->list[Movie]:
     return JSONResponse(content = jsonable_encoder(movies[offset : offset+consts.RETURN_MOVIES]) )
 
 @app.post("/movies/ids")
-def getMoviesWithID(ids: list[int])->list[Movie]:
+def getMoviesWithID(ids: list[int])->JSONResponse:
     """Find movies with given ids
 
     Args:
@@ -68,7 +68,7 @@ def getMoviesWithID(ids: list[int])->list[Movie]:
     return JSONResponse(content=jsonable_encoder(foundMovies))
 
 @app.post("/search/{query}")
-def searchMovie(query:str)->list[Movie]:
+def searchMovie(query:str)->JSONResponse:
     """Searching movies by title or ID
 
     Args:
@@ -88,7 +88,7 @@ def searchMovie(query:str)->list[Movie]:
         return JSONResponse(content = jsonable_encoder(foundMovies))
 
 @app.post("/models/list")
-def getListOfSavedModels()->list[str]:
+def getListOfSavedModels()->JSONResponse:
     """Get list of trained models
 
     Returns:
@@ -103,7 +103,7 @@ def getListOfSavedModels()->list[str]:
     return JSONResponse(content=jsonable_encoder(fileNames))
 
 @app.post("/models/recommend/{fileName}")
-def getRecommendations(fileName:str)->list[Movie]:  # todo jakoś że film, oceny i przewidywana ocena
+def getRecommendations(fileName:str)->JSONResponse:  # todo jakoś że film, oceny i przewidywana ocena
     model=funk_model.Funk.load(consts.SAVE_DIR / fileName)
     user=consts.REAL_USER_ID  # it's aimed for one user
     predictions=model.predictForUser(user)
@@ -119,7 +119,7 @@ def getRecommendations(fileName:str)->list[Movie]:  # todo jakoś że film, ocen
     return getMoviesWithID(bestMoviesIds)
 
 @app.post("/models/retrain")
-def retrainModel(ratings:list[custom_types.Rate]):
+def retrainModel(ratings:list[custom_types.Rate])->JSONResponse:
     userRatings=jsonable_encoder(ratings)
     train.trainModel(userRatings)
     return JSONResponse(content=jsonable_encoder("finish"))
@@ -127,5 +127,6 @@ def retrainModel(ratings:list[custom_types.Rate]):
 
 
 if __name__=="__main__":
-    recom = json.loads(getRecommendations("z-superbohaterami.bin").body)
-    print(recom)
+    recom=getRecommendations("funk-model-2026-9-15T21:15:54.bin").body
+    if type(recom) is bytes:
+        print(json.loads(recom))

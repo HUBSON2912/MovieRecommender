@@ -9,13 +9,13 @@ def readMovies() -> tuple[list[custom_types.Movie], dict[int,int]]:
     result:list[custom_types.Movie]=[]
     ids_map:dict[int, int]={}
     with open(consts.MOVIES) as inputFile:
-        reader=list(csv.DictReader(inputFile))
-        headers=reader[0]
-        reader=reader[1:]
-        result=list(filter(
-                        lambda x: not (x is None), 
-                        map(custom_types.Movie.transform, reader)
-                    ))
+        reader=csv.reader(inputFile)
+        headers=next(reader)
+        for row in reader:
+            rowAsDict=dict(zip(headers, row))
+            movie=custom_types.Movie.transform(rowAsDict)
+            if not movie is None:
+                result.append(movie)
         
     for i in range(len(result)):
         movie=result[i]
@@ -29,8 +29,7 @@ def readRatings(map_of_ids:dict[int,int]|None=None) -> dict[tuple[int,int], floa
     res:dict[tuple[int,int], float] = dict()
     with open(consts.RATINGS) as file:
         reader=list(csv.reader(file))
-        headers=reader[0]
-        reader=reader[1:]
+        reader=reader[1:] # skip headers
         for userId,movieId,rating,_ in reader:
             userId,movieId,rating = int(userId),int(movieId),float(rating)
 

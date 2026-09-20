@@ -1,5 +1,3 @@
-import csv
-import os
 import pathlib
 import consts
 import funk_model
@@ -21,7 +19,7 @@ def trainModel(userRatings:list[custom_types.Rate]=[], map_of_ids:dict[int, int]
 
     if len(userRatings)!=0:
         for rate in userRatings:
-            real_ratings[(consts.REAL_USER_ID, rate["movieId"])]=rate["rate"]
+            real_ratings[(consts.REAL_USER_ID, rate.movieId)]=rate.rate
 
     num_users:int = 0
     num_movies:int = 0

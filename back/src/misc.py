@@ -6,4 +6,4 @@ def hasBinExtentnion(filename: str|Path)->bool:
         return filename.match("*.bin")
     else:
         REGEX_BIN_EXT=r".*\.bin$"
-        return re.match(REGEX_BIN_EXT, filename)
+        return bool(re.match(REGEX_BIN_EXT, filename))
