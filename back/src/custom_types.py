@@ -90,3 +90,7 @@ class Movie(BaseModel):
 class Rate(BaseModel):
     movieId:int
     rate:float
+
+    @staticmethod
+    def transform(readDict:dict[str,int])->Rate:
+        return Rate(movieId=readDict["movieId"], rate=readDict["rate"])

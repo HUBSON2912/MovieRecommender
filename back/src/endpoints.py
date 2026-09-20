@@ -129,13 +129,15 @@ async def retrainModel(ratings:list[custom_types.Rate], background_tasks: Backgr
         def __train(userRatings:list[custom_types.Rate], ids_map: dict[int,int]):
             global currently_training
             currently_training=True
-            train.trainModel(userRatings, ids_map)
-            currently_training=False
+            try:
+                train.trainModel(userRatings, ids_map)
+            finally:
+                currently_training=False
         
-        userRatings:list[custom_types.Rate]=jsonable_encoder(ratings)
+        userRatings=[custom_types.Rate.transform(rate) for rate in jsonable_encoder(ratings)]
         background_tasks.add_task(__train, userRatings, ids_map)
 
-        return JSONResponse(content=jsonable_encoder({"status": "training"}))
+        return JSONResponse(content=jsonable_encoder({"status": "started"}))
     
 @app.post("/models/trainStatus")
 def trainingStatus()->JSONResponse:
