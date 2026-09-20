@@ -1,23 +1,15 @@
-import { Button, Typography } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import SearchBar from "../components/searchBar";
-import MovieCard from "../components/movieCard";
 import { useEffect, useState } from "react";
 import type { Movie } from "../types";
 import { getBatchOfMovies, searchMovie } from "../api/movies";
 import SomethingWentWrong from "../components/sthWentWrong";
 import MovieList from "../components/movieList";
+import LoadingCircle from "../components/loadingCircle";
 
 export default function SearchPage() {
     // errors
     const [isError, setIsError] = useState<boolean>(false);
-    const handleRefresh = () => {
-        setSearchTextInput("");
-        setFoundMovies(null);
-        setLoadedMovies([]);
-        setIsError(false);
-
-        handleLoadMoreMovies("set");
-    }
 
     // searching logic
     const [searchTextInput, setSearchTextInput] = useState<string>("");
@@ -37,7 +29,7 @@ export default function SearchPage() {
         setFoundMovies(null);
     }
 
-    // simple loading movies logic
+    // loading movies logic
     const [loadedMovies, setLoadedMovies] = useState<Movie[]>([]);
     const handleLoadMoreMovies = (mode: "set" | "append") => {
         getBatchOfMovies(mode == "set" ? 0 : loadedMovies.length)
@@ -49,13 +41,21 @@ export default function SearchPage() {
             })
             .catch(() => {
                 setIsError(true);
+            })
+            .finally(() => {
+                // disable loading animations/elements
+                setLoadingLoadMoreButton(false);
             });
     }
+
     // load movies on load
     useEffect(() => handleLoadMoreMovies("set"), []);
 
+    // loading screen
+    const [loadingLoadMoreButton, setLoadingLoadMoreButton] = useState<boolean>(false);
+
     if (isError) {
-        return (<SomethingWentWrong onRefresh={handleRefresh} />);
+        return (<SomethingWentWrong />);
     }
     else {
         return (
@@ -66,14 +66,28 @@ export default function SearchPage() {
                     onSearch={handleSearching}
                     onClear={handleClearingSearchBar}
                 />
+                {
+                    // do not search and not loaded movies yet
+                    foundMovies == null && loadedMovies.length == 0 &&
+                    <LoadingCircle />
+                }
+
                 <MovieList movies={foundMovies == null ? loadedMovies : foundMovies} />
                 {
                     foundMovies != null && foundMovies.length == 0 &&
                     <Typography component="p" sx={{ margin: 1 }}>Cannot find anything. Search for something else.</Typography>
                 }
                 {
-                    foundMovies == null &&
-                    <Button variant="outlined" onClick={() => handleLoadMoreMovies("append")}>load more</Button>
+                    // if I am not searching and after movies loaded at the begining
+                    foundMovies == null && loadedMovies.length != 0 &&
+                    <Button
+                        variant="outlined"
+                        loading={loadingLoadMoreButton}
+                        onClick={() => {
+                            setLoadingLoadMoreButton(true);
+                            handleLoadMoreMovies("append");
+                        }}
+                    >load more</Button>
                 }
             </>
         );

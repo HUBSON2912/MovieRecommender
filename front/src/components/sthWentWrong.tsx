@@ -1,10 +1,14 @@
 import { Button, Typography } from "@mui/material";
 
-export default function SomethingWentWrong({ onRefresh }: { onRefresh: () => void }) {
+function refreshPage() {
+    window.location.reload();
+}
+
+export default function SomethingWentWrong() {
     return (
         <>
             <Typography component="p">Something went wrong</Typography>
-            <Button variant="outlined" onClick={onRefresh}>Refresh</Button>
+            <Button variant="outlined" onClick={refreshPage} sx={{margin:2}}>Refresh</Button>
         </>
     );
 }

@@ -29,3 +29,9 @@ export type Movie = {
     vote_average: number,
     vote_count: number
 };
+
+export class ServerIsBusyError extends Error {
+    constructor(m: string="Server is busy") {
+        super(m);
+    }
+}
