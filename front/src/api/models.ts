@@ -1,6 +1,6 @@
 import { ENDPOINT } from "../consts";
 import { getSavedRatings } from "./localstorage";
-import type { Rate } from "../types";
+import type { Movie, Rate } from "../types";
 
 export async function getModelsList(): Promise<string[]> {
     const URL = ENDPOINT + `/models/list`;
@@ -35,6 +35,21 @@ export async function retrainNewModel() {
         return await servResponse.json();
     } catch (error) {
         console.error("Unexpected error in retrainNewModel().", error);
+        throw error;
+    }
+}
+
+export async function getRecommendations(modelName:string): Promise<Movie[]> {
+    const URL = ENDPOINT + `/models/recommend/${modelName}`;
+    try {
+        const servResponse = await fetch(URL, { method: "POST" });
+        if (!servResponse.ok) {
+            throw new Error(`Response status ${servResponse.status}`);
+        }
+
+        return await servResponse.json();
+    } catch (error) {
+        console.error("Unexpected error in getRecommendations().", error);
         throw error;
     }
 }

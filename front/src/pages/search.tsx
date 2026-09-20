@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import type { Movie } from "../types";
 import { getBatchOfMovies, searchMovie } from "../api/movies";
 import SomethingWentWrong from "../components/sthWentWrong";
+import MovieList from "../components/movieList";
 
 export default function SearchPage() {
     // errors
@@ -65,15 +66,7 @@ export default function SearchPage() {
                     onSearch={handleSearching}
                     onClear={handleClearingSearchBar}
                 />
-                {
-                    foundMovies == null
-                        ? loadedMovies.map((value) => {
-                            return (<MovieCard movie={value} key={`${value.title}-${value.id}`} />)
-                        })
-                        : foundMovies.map((value) => {
-                            return (<MovieCard movie={value} key={`${value.title}-${value.id}`} />)
-                        })
-                }
+                <MovieList movies={foundMovies == null ? loadedMovies : foundMovies} />
                 {
                     foundMovies != null && foundMovies.length == 0 &&
                     <Typography component="p" sx={{ margin: 1 }}>Cannot find anything. Search for something else.</Typography>

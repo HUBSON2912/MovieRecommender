@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Movie, Rate } from "../types";
 import { getSavedRatings } from "../api/localstorage";
-import MovieCard from "../components/movieCard";
 import { getMoviesByID } from "../api/movies";
+import MovieList from "../components/movieList";
 
 export default function RatedPage() {
     const [isError, setIsError] = useState<boolean>(false);
@@ -17,7 +17,7 @@ export default function RatedPage() {
     useEffect(() => {
         if (savedRatings.length == 0)
             return;
-        console.log(savedRatings);
+
         getMoviesByID(savedRatings)
             .then(res => setRatedMovies(res))
             .catch(() => setIsError(true));
@@ -26,9 +26,7 @@ export default function RatedPage() {
     return (
         <>
             {
-                ratedMovies.map((value) => {
-                    return (<MovieCard movie={value} key={`${value.title}-${value.id}`} />)
-                })
+                <MovieList movies={ratedMovies}/>
             }
         </>
     );
