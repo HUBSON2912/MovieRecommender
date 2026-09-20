@@ -28,8 +28,8 @@ def readMovies() -> tuple[list[custom_types.Movie], dict[int,int]]:
 def readRatings(map_of_ids:dict[int,int]|None=None) -> dict[tuple[int,int], float]: 
     res:dict[tuple[int,int], float] = dict()
     with open(consts.RATINGS) as file:
-        reader=list(csv.reader(file))
-        reader=reader[1:] # skip headers
+        reader=csv.reader(file)
+        next(reader) # skip headers
         for userId,movieId,rating,_ in reader:
             userId,movieId,rating = int(userId),int(movieId),float(rating)
 
@@ -53,5 +53,6 @@ def areDataComplete() -> bool:
     return True
 
 if __name__=="__main__":
-    movies, ids=readMovies()
-    print(movies[0])
+    # movies, ids=readMovies()
+    readRatings()
+    # print(movies[0])
