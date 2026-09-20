@@ -130,12 +130,15 @@ async def retrainModel(ratings:list[custom_types.Rate], background_tasks: Backgr
             global currently_training
             currently_training=True
             try:
-                train.trainModel(userRatings, ids_map)
+                train.trainModel(userRatings, ids_map, True)
+            except Exception as err:
+                print("retrainModel(): Error ocurred", err)
             finally:
                 currently_training=False
-        
+
         userRatings=[custom_types.Rate.transform(rate) for rate in jsonable_encoder(ratings)]
         background_tasks.add_task(__train, userRatings, ids_map)
+        # background_tasks.add_task(__test)
 
         return JSONResponse(content=jsonable_encoder({"status": "started"}))
     
@@ -144,6 +147,7 @@ def trainingStatus()->JSONResponse:
     if currently_training:
         return JSONResponse(content=jsonable_encoder({"status": "running"}))
     return JSONResponse(content=jsonable_encoder({"status": "free"}))
+
 
 if __name__=="__main__":
     recom=getRecommendations("funk-model-2026-9-15T21:15:54.bin").body

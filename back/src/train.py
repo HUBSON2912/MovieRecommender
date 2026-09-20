@@ -26,8 +26,9 @@ def trainModel(userRatings:list[custom_types.Rate]=[], map_of_ids:dict[int, int]
     num_users, num_movies=getNumUsersItems(real_ratings)
     
     model=funk_model.Funk(num_users+1, num_movies+1,consts.SECOND_DIMENTIONS, 0.01, 0.001, 0.001)  # +1 because the user is the 0th and ids are counted from 1
-    model.train(real_ratings, max_iterations=consts.ITERATIONS, show_logs=show_logs)
-    
+    model.train(real_ratings, max_iterations=consts.ITERATIONS)
+
+    print("Training finished")
     return model.save().name
     
     # model.printPredictions()
