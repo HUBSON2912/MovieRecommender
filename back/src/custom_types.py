@@ -38,7 +38,7 @@ def strToListOfGenre(str:str)->list[str]:
     genres:list[Genre]=json.loads(str)
     return list(map(lambda x: x["name"], genres))
 
-TRANSFORMATION_FUNCTIONS:dict[str, typing.Callable] = {
+TRANSFORMATION_FUNCTIONS:dict[str, typing.Callable[[str],typing.Any]] = {
     "adult": lambda str: str=="True",
     "genres": strToListOfGenre,
     "id": int,
@@ -66,7 +66,8 @@ class Movie(BaseModel):
     vote_count:int
 
     @staticmethod
-    def transform(dict_csv: dict) -> Movie|None:
+    def transform(dict_csv: dict[str,str]) -> Movie|None:
+        
         # remove fields that are unnecessary but exist in csv
         keyValPairs= dict_csv.items()
         keyValPairs=list(filter(lambda kv: kv[0] in Movie.__annotations__.keys(), keyValPairs))

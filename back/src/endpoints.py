@@ -5,12 +5,11 @@ import funk_model
 import train
 import custom_types
 from misc import hasBinExtentnion
-from fastapi import FastAPI
+from fastapi import FastAPI, BackgroundTasks, status, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from handledata import readMovies
-from custom_types import Movie
 
 app = FastAPI()
 
@@ -30,10 +29,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+currently_training:bool=False # only one model can be trained at once
+
 movies, ids_map=readMovies()
 
 @app.get("/")
-def status()->object:
+def serverStatus()->object:
     """Ping endpoint
 
     Returns:
@@ -103,7 +104,7 @@ def getListOfSavedModels()->JSONResponse:
     return JSONResponse(content=jsonable_encoder(fileNames))
 
 @app.post("/models/recommend/{fileName}")
-def getRecommendations(fileName:str)->JSONResponse:  # todo jakoś że film, oceny i przewidywana ocena
+def getRecommendations(fileName:str)->JSONResponse:
     model=funk_model.Funk.load(consts.SAVE_DIR / fileName)
     user=consts.REAL_USER_ID  # it's aimed for one user
     predictions=model.predictForUser(user)
@@ -118,13 +119,29 @@ def getRecommendations(fileName:str)->JSONResponse:  # todo jakoś że film, oce
 
     return getMoviesWithID(bestMoviesIds)
 
-@app.post("/models/retrain")
-def retrainModel(ratings:list[custom_types.Rate])->JSONResponse:
-    userRatings=jsonable_encoder(ratings)
-    train.trainModel(userRatings)
-    return JSONResponse(content=jsonable_encoder("finish"))
-    
+@app.post("/models/retrain", status_code=status.HTTP_202_ACCEPTED)
+async def retrainModel(ratings:list[custom_types.Rate], background_tasks: BackgroundTasks)->JSONResponse:
+    global currently_training
 
+    if currently_training:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Server is currently training a model.")
+    else:
+        def __train(userRatings:list[custom_types.Rate], ids_map: dict[int,int]):
+            global currently_training
+            currently_training=True
+            train.trainModel(userRatings, ids_map)
+            currently_training=False
+        
+        userRatings:list[custom_types.Rate]=jsonable_encoder(ratings)
+        background_tasks.add_task(__train, userRatings, ids_map)
+
+        return JSONResponse(content=jsonable_encoder({"status": "training"}))
+    
+@app.post("/models/trainStatus")
+def trainingStatus()->JSONResponse:
+    if currently_training:
+        return JSONResponse(content=jsonable_encoder({"status": "training"}))
+    return JSONResponse(content=jsonable_encoder({"status": "free"}))
 
 if __name__=="__main__":
     recom=getRecommendations("funk-model-2026-9-15T21:15:54.bin").body

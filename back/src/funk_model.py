@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional
 
 class Funk:
-    def __init__(self, nusers:int, nitems:int, secdim:int, regulation_param:float, learn_rate:float, learn_rate_decay=0.05):
+    def __init__(self, nusers:int, nitems:int, secdim:int, regulation_param:float, learn_rate:float, learn_rate_decay:float=0.05):
         self.nusers:int = nusers
         self.nitems:int = nitems
         self.secdim:int = secdim
@@ -29,7 +29,7 @@ class Funk:
     def getDummy():
         return Funk(1,1,1,1,1,1)
 
-    def __predictionError(self, user, item): 
+    def __predictionError(self, user:int, item:int): 
         return self.trainData[user,item] - self.predict(user, item)
    
     def lossFunction(self):
@@ -40,7 +40,7 @@ class Funk:
         
         return sum/len(keys)
 
-    def __updateMatrix(self, iternum=None):
+    def __updateMatrix(self, iternum:int=0):
         _counterPercent:int=0
         _keys=self.trainData.keys()
 
@@ -63,7 +63,7 @@ class Funk:
             if int(10*(_counterPercent-1)/len(_keys)) != int(10*_counterPercent/len(_keys)):
                 print(f"Iter: {iternum}\tProgress: {_counterPercent} / {len(_keys)} = {int(100*_counterPercent/len(_keys))}")
 
-    def train(self, ratings:dict[tuple[int,int], float], max_iterations=100, error_tolerance=1e-3):
+    def train(self, ratings:dict[tuple[int,int], float], max_iterations:int=100, error_tolerance:float=1e-3):
         self.trainData=ratings
         for i in range(max_iterations):
             self.__updateMatrix(i+1)
@@ -88,7 +88,7 @@ class Funk:
 
     def printPredictions(self):
         # error graph
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         x,y=list(range(len(self.__errors))), self.__errors
         ax.plot(x,y)
         ax.grid()
