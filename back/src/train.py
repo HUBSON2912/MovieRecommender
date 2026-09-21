@@ -15,7 +15,7 @@ def trainModel(userRatings:list[custom_types.Rate]=[], map_of_ids:dict[int, int]
     if not handledata.areDataComplete():
         raise FileNotFoundError("Missing data file. Try to download the data .zip package.")
 
-    real_ratings:dict[tuple[int,int], float] = handledata.readRatings(map_of_ids)
+    real_ratings:dict[tuple[int,int], float] = handledata.readRatings(consts.RATINGS, map_of_ids)
 
     if len(userRatings)!=0:
         for rate in userRatings:
@@ -34,7 +34,7 @@ def trainModel(userRatings:list[custom_types.Rate]=[], map_of_ids:dict[int, int]
     # model.printPredictions()
 
 if __name__=="__main__":
-    movies,ids=handledata.readMovies()
+    movies,ids=handledata.readMovies(consts.MOVIES)
     name=trainModel(map_of_ids=ids)
     model=funk_model.Funk.load(pathlib.Path(consts.SAVE_DIR/name))
     # model.printPredictions()

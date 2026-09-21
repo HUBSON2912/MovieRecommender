@@ -1,14 +1,15 @@
 import csv
+from pathlib import Path
 import consts
 import custom_types
 import os
 
 
-def readMovies() -> tuple[list[custom_types.Movie], dict[int,int]]:
+def readMovies(filepath:Path) -> tuple[list[custom_types.Movie], dict[int,int]]:
     """Returns the list of movies sorted by popularity (descending) and dictionary of ids. There are missing movies id so it shifts all the movie ids down."""
     result:list[custom_types.Movie]=[]
     ids_map:dict[int, int]={}
-    with open(consts.MOVIES) as inputFile:
+    with open(filepath) as inputFile:
         reader=csv.reader(inputFile)
         headers=next(reader)
         for row in reader:
@@ -25,9 +26,9 @@ def readMovies() -> tuple[list[custom_types.Movie], dict[int,int]]:
     result.sort(key=lambda x: x.popularity, reverse=True)
     return (result, ids_map)
 
-def readRatings(map_of_ids:dict[int,int]|None=None) -> dict[tuple[int,int], float]: 
+def readRatings(filepath:Path, map_of_ids:dict[int,int]|None=None) -> dict[tuple[int,int], float]: 
     res:dict[tuple[int,int], float] = dict()
-    with open(consts.RATINGS) as file:
+    with open(filepath) as file:
         reader=csv.reader(file)
         next(reader) # skip headers
         for userId,movieId,rating,_ in reader:
@@ -54,5 +55,5 @@ def areDataComplete() -> bool:
 
 if __name__=="__main__":
     # movies, ids=readMovies()
-    readRatings()
+    readRatings(consts.RATINGS)
     # print(movies[0])

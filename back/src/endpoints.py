@@ -31,7 +31,7 @@ app.add_middleware(
 
 currently_training:bool=False # only one model can be trained at once
 
-movies, ids_map=readMovies()
+movies, ids_map=readMovies(consts.MOVIES)
 
 @app.get("/")
 def serverStatus()->object:
