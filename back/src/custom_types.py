@@ -1,42 +1,14 @@
 from __future__ import annotations
-import json
 import typing
 import datetime
 from pydantic import BaseModel, ValidationError
 
-class Collection(typing.TypedDict):
-    id:int
-    name:str
-    poster_path:str
-    backdrop_path:str
+from misc import strToDate, strToListOfGenre
 
 class Genre(typing.TypedDict):
     id:int
     name:str
 
-class Company(typing.TypedDict):
-    name:str
-    id:int
-
-class Country(typing.TypedDict):
-    iso_3166_1:str
-    name:str
-
-class Language(typing.TypedDict):
-    iso_639_1:str
-    name:str
-
-
-# general purpose functions but aimed for Movies
-def strToDate(str:str)->datetime.date|None:
-    params=str.split("-")
-    y,m,d=list(map(int,params))
-    return datetime.date(y, m, d)
-
-def strToListOfGenre(str:str)->list[str]:
-    str=str.replace("'", "\"")
-    genres:list[Genre]=json.loads(str)
-    return list(map(lambda x: x["name"], genres))
 
 TRANSFORMATION_FUNCTIONS:dict[str, typing.Callable[[str],typing.Any]] = {
     "adult": lambda str: str=="True",
