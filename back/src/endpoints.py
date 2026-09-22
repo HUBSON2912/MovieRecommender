@@ -4,7 +4,7 @@ import os
 import funk_model
 import train
 import custom_types
-from misc import hasBinExtentnion
+from misc import hasBinExtension
 from fastapi import FastAPI, BackgroundTasks, status, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
@@ -100,7 +100,7 @@ def getListOfSavedModels()->JSONResponse:
 
     
     fileNames:list[str]=os.listdir(consts.SAVE_DIR)
-    fileNames=list(filter(hasBinExtentnion, fileNames))
+    fileNames=list(filter(hasBinExtension, fileNames))
     return JSONResponse(content=jsonable_encoder(fileNames))
 
 @app.post("/models/recommend/{fileName}")

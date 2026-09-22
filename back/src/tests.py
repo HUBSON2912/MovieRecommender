@@ -1,10 +1,10 @@
 import pytest
 import datetime
 from pathlib import Path
-from back.src.misc import hasBinExtentnion
+from back.src.misc import hasBinExtension
 from custom_types import Movie
 
-# ===== misc.py hasBinExtentnion FUNCTION =====
+# ===== misc.py hasBinExtension FUNCTION =====
 
 @pytest.mark.parametrize("filename,expected", [
     ("file_name.bin", True), 
@@ -16,8 +16,15 @@ from custom_types import Movie
     (Path("filename.mp3.bin"), True),
     (Path("filename.bin.mp3"), False),
 ])
-def test_hasBinExtentnion_common_usage(filename,expected):
-    assert hasBinExtentnion(filename) == expected
+def test_hasBinExtension_common_usage(filename,expected):
+    assert hasBinExtension(filename) == expected
+
+@pytest.mark.parametrize("filename,expected", [
+    (".bin", True), 
+    (Path(".bin"), True),
+])
+def test_hasBinExtension_filename_with_only_extension(filename,expected):
+    assert hasBinExtension(filename) == expected
 
 @pytest.mark.parametrize("filename",[
     (1,), 
@@ -26,9 +33,9 @@ def test_hasBinExtentnion_common_usage(filename,expected):
     (["file.bin"],), 
     (-1,)
 ])
-def test_hasBinExtentnion_wrong_input_types(filename,):
+def test_hasBinExtension_wrong_input_types(filename,):
     with pytest.raises(TypeError):
-        hasBinExtentnion(filename)
+        hasBinExtension(filename)
 
 # ==== handledata.py readMovies FUNCTION =====
 # @pytest.fixture(scope="session")

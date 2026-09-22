@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-def hasBinExtentnion(filename: str|Path)->bool:
+def hasBinExtension(filename: str|Path)->bool:
     if isinstance(filename, Path):
         return filename.match("*.bin")
     else:
