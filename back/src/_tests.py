@@ -1,8 +1,11 @@
+from ctypes import ArgumentError
+
+from click import argument
 import pytest
 import datetime
 from pathlib import Path
 # from handledata import readMovies
-from misc import hasBinExtension, strToDate
+from misc import hasBinExtension, strToDate, strToListOfGenre
 from custom_types import Movie
 
 # ===== misc.py hasBinExtension FUNCTION =====
@@ -117,6 +120,46 @@ def test_strToDate_before_christ(dateString):
     # strToDate doesn't support BC years
     with pytest.raises(ValueError):
         strToDate(dateString)
+
+# ===== misc.py strToListOfGenre FUNCTION =====
+
+@pytest.mark.parametrize("csvPartString,expected",[
+    ("[{'id': 16, 'name': 'Animation'}, {'id': 35, 'name': 'Comedy'}, {'id': 10751, 'name': 'Family'}]",['Animation', 'Comedy', 'Family']),
+    ("[{'id': 12, 'name': 'Adventure'}, {'id': 14, 'name': 'Fantasy'}, {'id': 10751, 'name': 'Family'}]",['Adventure', 'Fantasy', 'Family']),
+    ("[{'id': 10749, 'name': 'Romance'}, {'id': 35, 'name': 'Comedy'}]",['Romance', 'Comedy']),
+    ("[{'id': 35, 'name': 'Comedy'}, {'id': 18, 'name': 'Drama'}, {'id': 10749, 'name': 'Romance'}]",['Comedy', 'Drama', 'Romance']),
+])
+def test_strToListOfGenre_general_usage(csvPartString,expected):
+    assert strToListOfGenre(csvPartString)==expected
+
+@pytest.mark.parametrize("csvPartString,expected",[
+    ("[{'name': 'Animation'}, {'id': 35, 'name': 'Comedy'}, {'name': 'Family'}]",['Animation', 'Comedy', 'Family']),
+    ("[{'id': 12, 'name': 'Adventure'}, {'name': 'Fantasy'}, {'id': 10751, 'name': 'Family'}]",['Adventure', 'Fantasy', 'Family']),
+    ("[{'id': 10749, 'name': 'Romance'}, {'name': 'Comedy'}]",['Romance', 'Comedy']),
+    ("[{'id': 35, 'name': 'Comedy'}, {'name': 'Drama'}, {'id': 10749, 'name': 'Romance'}]",['Comedy', 'Drama', 'Romance']),
+])
+def test_strToListOfGenre_missing_id(csvPartString,expected):
+        assert strToListOfGenre(csvPartString)==expected
+
+@pytest.mark.parametrize("csvString", [
+    "[{'id': 16, 'name': 'Animation'}, {'id': 35, 'name': 'Comedy'}, {'id': 10751}]",
+    "[{'id': 12}, {'id': 14}, {'id': 10751, 'name': 'Family'}]",
+    "[{'id': 10749}, {'id': 35, 'name': 'Comedy'}]",
+    "[{'id': 35, 'name': 'Comedy'}, {'id': 18}, {'id': 10749, 'name': 'Romance'}]",
+])
+def test_strToListOfGenre_doesnt_have_name(csvString):
+    with pytest.raises(KeyError):
+        strToListOfGenre(csvString)
+
+@pytest.mark.parametrize("csvPartString,expected",[
+    ("[{'id': 16, 'name': 'Animation', 'random': 423}, {'id': 35,'lorem': 'Comedy', 'name': 'Comedy'}, {'id': 10751, 'name': 'Family'}]",['Animation', 'Comedy', 'Family']),
+    ("[{'id': 12, 'name': 'Adventure', 'magyar': 632, 'mako': true}, {'id': 14, 'name': 'Fantasy', 'ipsum': 4.34}, {'id': 10751, 'name': 'Family'}]",['Adventure', 'Fantasy', 'Family']),
+    ("[{'id': 10749, 'name': 'Romance'}, {'id': 35, 'name': 'Comedy', 'add1': 6}]",['Romance', 'Comedy']),
+    ("[{'id': 35, 'name': 'Comedy', 'math':'trigonometry', 'physics':'dynamic'}, {'id': 18, 'addit1':null, 'name': 'Drama'}, {'id': 10749, 'name': 'Romance'}]",['Comedy', 'Drama', 'Romance']),
+])
+def test_strToListOfGenre_has_additional_keys(csvPartString,expected):
+    assert strToListOfGenre(csvPartString)==expected
+        
 
 # ===== handledata.py readMovies FUNCTION =====
 # @pytest.fixture(scope="session")

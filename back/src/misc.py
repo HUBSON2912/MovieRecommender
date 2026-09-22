@@ -15,8 +15,7 @@ def strToDate(str:str) -> datetime.date:
     y,m,d=list(map(int,params))
     return datetime.date(y, m, d)
 
-def strToListOfGenre(str:str)->list[str]:
-    from custom_types import Genre
-    str=str.replace("'", "\"")
-    genres:list[Genre]=json.loads(str)
+def strToListOfGenre(csvString:str)->list[str]:
+    csvString=csvString.replace("'", "\"")
+    genres=json.loads(csvString)
     return list(map(lambda x: x["name"], genres))
