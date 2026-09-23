@@ -68,4 +68,8 @@ class Rate(BaseModel):
 
     @staticmethod
     def transform(readDict:dict[str,int])->Rate:
-        return Rate(movieId=readDict["movieId"], rate=readDict["rate"])
+        id=readDict["movieId"]
+        rate=readDict["rate"]
+        if id<0 or rate<0 or rate>10:
+            raise ValueError
+        return Rate(movieId=id, rate=rate)
