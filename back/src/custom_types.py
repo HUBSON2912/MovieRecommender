@@ -3,7 +3,7 @@ import typing
 import datetime
 from pydantic import BaseModel, ValidationError
 
-from misc import strToDate, strToListOfGenre
+from .misc import strToDate, strToListOfGenre
 
 class Genre(typing.TypedDict):
     id:int
