@@ -70,6 +70,10 @@ def test_strToDate_before_unix_era(dateString,expected):
 def test_strToDate_year_one():
     assert strToDate("1-5-19") == datetime.date(1,5,19)
 
+def test_strToDate_year_zero():
+    with pytest.raises(ValueError):
+        strToDate("0-5-19")
+
 @pytest.mark.parametrize("dateString,expected", [
     ("2024-2-29", datetime.date(2024,2,29)), 
     ("2020-2-29", datetime.date(2020,2,29)), 
@@ -152,3 +156,12 @@ def test_strToListOfGenre_doesnt_have_name(csvString):
 def test_strToListOfGenre_has_additional_keys(csvPartString,expected):
     assert strToListOfGenre(csvPartString)==expected
         
+@pytest.mark.parametrize("csvString", [
+    "[{'id': 16, 'name': 3.14}, {'id': 35, 'name': 100}, {'id': 10751, 'name': 'Family'}]",
+    "[{'id': 12, 'name': 'Adventure'}, {'id': 14, 'name': True}, {'id': 10751, 'name': []}]",
+    "[{'id': 10749, 'name': 100}, {'id': 35, 'name': 'Comedy'}]",
+    "[{'id': 35, 'name': 100}, {'id': 18, 'name': null}, {'id': 10749, 'name': 3.14}]",
+])
+def test_strToListOfGenre_name_is_wrong_type(csvString):
+    with pytest.raises(ValueError):
+        strToListOfGenre(csvString)

@@ -1,3 +1,4 @@
+from ctypes import ArgumentError
 import datetime
 import json
 import re
@@ -17,5 +18,12 @@ def strToDate(str:str) -> datetime.date:
 
 def strToListOfGenre(csvString:str)->list[str]:
     csvString=csvString.replace("'", "\"")
-    genres=json.loads(csvString)
-    return list(map(lambda x: x["name"], genres))
+    genres=list(map(lambda x: x["name"], json.loads(csvString)))
+
+    # what if {"name": 3.1415}
+    isString=map(lambda x: isinstance(x,str), genres)
+    if not all(isString):
+        raise ValueError
+    
+    return list(genres)
+    

@@ -46,8 +46,11 @@ class Movie(BaseModel):
 
         dict_correctTypes={}
         for name,value in keyValPairs:
+            if not isinstance(value, str):
+                # double check the type
+                return None
             try:
-                dict_correctTypes[name]=TRANSFORMATION_FUNCTIONS[name](value)
+                 dict_correctTypes[name]=TRANSFORMATION_FUNCTIONS[name](value)
             except:
                 # if data not valid then None
                 return None
