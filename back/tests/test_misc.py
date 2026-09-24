@@ -165,3 +165,37 @@ def test_strToListOfGenre_has_additional_keys(csvPartString,expected):
 def test_strToListOfGenre_name_is_wrong_type(csvString):
     with pytest.raises(ValueError):
         strToListOfGenre(csvString)
+
+
+# ===== misc.py validateIfPicturePath FUNCTION =====
+@pytest.mark.parametrize("picturePath,expected", [
+    ("/affhLAJKLH3u4nmkansid8.jpg",True),
+    ("/affhLAJKLH3u4nmkansid8.png",True),
+    ("/affhLAJKLH3u4nmkansid8.jpeg",True),
+
+    ("/sdfaf.jpg",True),
+    ("/dsafsdaf.png",True),
+    ("/ytxdfg.jpeg",True),
+
+    ("/435345.jpg",True),
+    ("/65453574.png",True),
+    ("/764456.jpeg",True),
+    
+    ("/GFDSGDFGSDG.jpg",True),
+    ("/IUGFTGG.png",True),
+    ("/UJRDGDG.jpeg",True),
+
+    ("/ghsluidfghjklh&dgf.jpg",False),
+    ("/fgsasdf@#fdfg.png",False),
+    ("/ghtfd:gdfg.jpeg",False),
+    ("/ghsluidfghjklh&dgf.jpg",False),
+    ("/fgsasdf@#fdfg.png",False),
+    ("/ghtfd:gdfg.jpeg",False),
+    ("/ghsluidfghjklhdgf",False),
+    ("/fgsasdf@#fdfg",False),
+    ("ghtfdgdfg.jpeg",False),
+    ("ghtfdgdfg",False),
+    ("g&2fddhs#$htfdgdfg",False),
+])
+def test_validateIfPicturePath_common_usage(picturePath,expected):
+    assert validateIfPicturePath(picturePath)==expected

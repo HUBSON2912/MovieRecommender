@@ -1,8 +1,8 @@
 import csv
-from pathlib import Path
-import consts
-import custom_types
 import os
+import back.src.consts as consts
+import back.src.custom_types as custom_types
+from pathlib import Path
 
 
 def readMovies(filepath:Path) -> tuple[list[custom_types.Movie], dict[int,int]]:

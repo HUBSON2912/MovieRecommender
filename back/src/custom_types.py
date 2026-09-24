@@ -3,7 +3,7 @@ import typing
 import datetime
 from pydantic import BaseModel, ValidationError
 
-from .misc import strToDate, strToListOfGenre
+from .misc import strToDate, strToListOfGenre, validateIfPicturePath
 
 class Genre(typing.TypedDict):
     id:int
@@ -17,7 +17,7 @@ TRANSFORMATION_FUNCTIONS:dict[str, typing.Callable[[str],typing.Any]] = {
     "imdb_id": str,
     "overview": str,
     "popularity": float,
-    "poster_path": str,
+    "poster_path": lambda x: str(x) if validateIfPicturePath(x) else None,
     "release_date": strToDate,
     "title": str,
     "vote_average": float,

@@ -26,4 +26,7 @@ def strToListOfGenre(csvString:str)->list[str]:
         raise ValueError
     
     return list(genres)
-    
+
+def validateIfPicturePath(picturePath:str)->bool:
+    REGEX_BIN_EXT=r"^\/[0-9a-zA-Z]*\.(jpg|png|jpeg)$"
+    return bool(re.match(REGEX_BIN_EXT, picturePath))
