@@ -13,6 +13,11 @@ Working on the project I learn something about:
 - React + MaterialUI
 - Unit tests in Python
 
+# About testing
+I had some truble with `Movie.transform` method in `back/src/custom_types.py` so I wrote unit tests to check anytime if it works. 
+
+I didn't plan to write unit tests for the rest of code because it is not a big project; tests were very useful, but not necessary. Finally I wrote some unit tests in `pytest` but they aren't a key point I think. I made them for skill rather than for real need.
+
 # Source of data
 https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset/data
 

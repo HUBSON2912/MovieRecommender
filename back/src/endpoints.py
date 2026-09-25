@@ -1,15 +1,15 @@
 import json
-import consts
 import os
-import funk_model
-import train
-import custom_types
-from misc import hasBinExtension
+import back.src.consts as consts
+import back.src.funk_model as funk_model
+import back.src.train as train
+import back.src.custom_types as custom_types
+from back.src.misc import hasBinExtension
+from back.src.handledata import readMovies
 from fastapi import FastAPI, BackgroundTasks, status, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
-from handledata import readMovies
 
 app = FastAPI()
 

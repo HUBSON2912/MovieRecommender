@@ -1,8 +1,8 @@
 import pathlib
-import consts
-import funk_model
-import custom_types
-import handledata
+import back.src.consts as consts
+import back.src.funk_model as funk_model
+import back.src.custom_types as custom_types
+import back.src.handledata as handledata
 
 def getNumUsersItems(ratings: dict[tuple[int,int], float]) -> tuple[int,int]:
     unum, inum=0,0

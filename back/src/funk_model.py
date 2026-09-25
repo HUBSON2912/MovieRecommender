@@ -4,10 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 import datetime
-import consts
 import os
-from pathlib import Path
+import back.src.consts as consts
 from typing import Optional
+from pathlib import Path
 
 class Funk:
     def __init__(self, nusers:int, nitems:int, secdim:int, regulation_param:float, learn_rate:float, learn_rate_decay:float=0.05):
